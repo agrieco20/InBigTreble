@@ -7,10 +7,11 @@
 */
 
 #include <iostream>
-#include "SFML/Graphics.hpp" //Graphics Libraries
+#include "SFML/Graphics.hpp" //SFML Graphics Libraries
 #include "SFML/Window/Mouse.hpp" //Mouse Libraries
 #include "Space.h" //Designed to store the location of each of the spaces players can land on while playing the game
-//#include "Player.h"
+#include "Player.h" //Designed to store the location of each player as they progress through the game. Player objects tend to communicate directly with the Space objects in order the determine where they need to travel to on the board.
+#include <list> //ArrayList Library
 
 using namespace sf;
 using namespace std;
@@ -21,68 +22,94 @@ int main()
     /* Initialization of each Space Object, which are each used by the player objects to determine 
     the cordinates where they need to be placed when the move around the board.
     */
-    Space space1(1, 790.f, 1612.f, false);      //Space space51(51, .f, .f, false);
-    //Space space2(2, .f, .f, false);       //Space space52(52, .f, .f, false);
-    //Space space3(3, .f, .f, false);       //Space space53(53, .f, .f, false);
-    //Space space4(4, .f, .f, false);       //Space space54(54, .f, .f, false);
-    //Space space5(5, .f, .f, false);       //Space space55(55, .f, .f, false);
-    //Space space6(6, .f, .f, false);       //Space space56(56, .f, .f, false);
-    //Space space7(7, .f, .f, false);       //Space space57(57, .f, .f, false);
-    //Space space8(8, .f, .f, false);       //Space space58(58, .f, .f, false);
-    //Space space9(9, .f, .f, false);       //Space space59(59, .f, .f, false);
-    //Space space10(10, .f, .f, false);       //Space space60(60, .f, .f, false);
-    //Space space12(11, .f, .f, false);       //Space space61(61, .f, .f, false);
-    //Space space12(12, .f, .f, false);       //Space space62(62, .f, .f, false);
-    //Space space13(13, .f, .f, false);       //Space space63(63, .f, .f, false);
-    //Space space14(14, .f, .f, false);       //Space space64(64, .f, .f, false);
-    //Space space15(15, .f, .f, false);       //Space space65(65, .f, .f, false);
-    //Space space16(16, .f, .f, false);       //Space space66(66, .f, .f, false);
-    //Space space17(17, .f, .f, false);       //Space space67(67, .f, .f, false);
-    //Space space18(18, .f, .f, false);       //Space space68(68, .f, .f, false);
-    //Space space19(19, .f, .f, false);       //Space space69(69, .f, .f, false);
-    //Space space20(20, .f, .f, false);       //Space space70(70, .f, .f, false);
-    //Space space21(21, .f, .f, false);       //Space space71(71, .f, .f, false);
-    //Space space22(22, .f, .f, false);       //Space space72(72, .f, .f, false);
-    //Space space23(23, .f, .f, false);       //Space space73(73, .f, .f, false);
-    //Space space24(24, .f, .f, false);       //Space space74(74, .f, .f, false);
-    //Space space25(25, .f, .f, false);       //Space space75(75, .f, .f, false);
-    //Space space26(26, .f, .f, false);       //Space space76(76, .f, .f, false);
-    //Space space27(27, .f, .f, false);       //Space space77(77, .f, .f, false);
-    //Space space28(28, .f, .f, false);       //Space space78(78, .f, .f, false);
-    //Space space29(29, .f, .f, false);       //Space space79(79, .f, .f, false);
-    //Space space30(30, .f, .f, false);       //Space space80(80, .f, .f, false);
-    //Space space31(31, .f, .f, false);       //Space space81(81, .f, .f, false);
-    //Space space32(32, .f, .f, false);       //Space space82(82, .f, .f, false);
-    //Space space33(33, .f, .f, false);       //Space space83(83, .f, .f, false);
-    //Space space34(34, .f, .f, false);       //Space space84(84, .f, .f, false);
-    //Space space35(35, .f, .f, false);       //Space space85(85, .f, .f, false);
-    //Space space36(36, .f, .f, false);       //Space space86(86, .f, .f, false);
-    //Space space37(37, .f, .f, false);       //Space space87(87, .f, .f, false);
-    //Space space38(38, .f, .f, false);       //Space space88(88, .f, .f, false);
-    //Space space39(39, .f, .f, false);       //Space space89(89, .f, .f, false);
-    //Space space40(40, .f, .f, false);       //Space space90(90, .f, .f, false);
-    //Space space41(41, .f, .f, false);       //Space space91(91, .f, .f, false);
-    //Space space42(42, .f, .f, false);       //Space space92(92, .f, .f, false);
-    //Space space43(43, .f, .f, false);       //Space space93(93, .f, .f, false);
-    //Space space44(44, .f, .f, false);       //Space space94(94, .f, .f, false);
-    //Space space45(45, .f, .f, false);       //Space space95(95, .f, .f, false);
-    //Space space46(46, .f, .f, false);       //Space space96(96, .f, .f, false);
-    //Space space47(47, .f, .f, false);       //Space space97(97, .f, .f, false);
-    //Space space48(48, .f, .f, false);
-    //Space space49(49, .f, .f, false);
-    //Space space50(50, .f, .f, false);
+    Space space1(1, 790.f, 1612.f, false);                Space space51(51, 508.f, 582.f, false);
+    Space space2(2, 868.f, 1651.f, false);                Space space52(52, 492.f, 648.f, false);
+    Space space3(3, 961.f, 1623.f, false);                Space space54(54, 446.f, 758.f, false);
+    Space space4(4, 1020.f, 1560.f, false);               Space space55(55, 421.f, 817.f, false);
+    Space space5(5, 1029.f, 1490.f, false);               Space space56(56, 402.f, 873.f, false);
+    Space space6(6, 1014.f, 1433.f, false);               Space space57(57, 389.f, 927.f, false);
+    Space space7(7, 983.f, 1381.f, false);                Space space58(58, 376.f, 982.f, false);
+    Space space8(8, 949.f, 1331.f, false);                Space space59(59, 368.f, 1037.f, false);
+    Space space9(9, 909.f, 1281.f, false);                Space space60(60, 375.f, 1097.f, false);
+    Space space10(10, 876.f, 1234.f, false);/* Also #71 */Space space61(61, 387.f, 1151.f, false);
+    Space space11(11, 854.f, 1205.f, false);              Space space62(62, 412.f, 1203.f, false);
+    Space space12(12, 832.f, 1177.f, false);              Space space63(63, 443.f, 1247.f, false);
+    Space space13(13, 808.f, 1145.f, false);              Space space64(64, 503.f, 1291.f, false);
+    Space space14(14, 784.f, 1116.f, false);              Space space65(65, 565.f, 1318.f, false);
+    Space space15(15, 763.f, 1087.f, false);              Space space66(66, 623.f, 1327.f, false);
+    Space space16(16, 744.f, 1061.f, false);              Space space67(67, 675.f, 1326.f, false);
+    Space space17(17, 720.f, 1033.f, false);              Space space68(68, 732.f, 1315.f, false);
+    Space space18(18, 695.f, 998.f, false);               Space space69(69, 787.f, 1295.f, false);
+    Space space19(19, 646.f, 931.f, false);/* Also #88 */ Space space70(70, 841.f, 1267.f, false);
+    Space space20(20, 600.f, 876.f, false);               Space space72(72, 902.f, 1206.f, false);
+    Space space21(21, 580.f, 851.f, false);               Space space73(73, 922.f, 1173.f, false);
+    Space space22(22, 560.f, 824.f, false);               Space space74(74, 934.f, 1142.f, false);
+    Space space23(23, 536.f, 792.f, false);               Space space75(75, 942.f, 1114.f, false);
+    Space space24(24, 477.f, 716.f, false);/* Also #53 */ Space space76(76, 947.f, 1085.f, false);
+    Space space25(25, 410.f, 629.f, false);               Space space77(77, 945.f, 1053.f, false);
+    Space space26(26, 389.f, 603.f, false);               Space space78(78, 937.f, 1024.f, false);
+    Space space27(27, 368.f, 571.f, false);               Space space79(79, 924.f, 994.f, false);
+    Space space28(28, 349.f, 538.f, false);               Space space80(80, 906.f, 964.f, false);
+    Space space29(29, 329.f, 503.f, false);               Space space81(81, 882.f, 935.f, false);
+    Space space30(30, 314.f, 469.f, false);               Space space82(82, 849.f, 916.f, false);
+    Space space31(31, 305.f, 436.f, false);               Space space83(83, 819.f, 906.f, false);
+    Space space32(32, 299.f, 404.f, false);               Space space84(84, 788.f, 895.f, false);
+    Space space33(33, 295.f, 369.f, false);               Space space85(85, 752.f, 895.f, false);
+    Space space34(34, 295.f, 342.f, false);               Space space86(86, 713.f, 898.f, false);
+    Space space35(35, 295.f, 312.f, false);               Space space87(87, 677.f, 912.f, false);
+    Space space36(36, 303.f, 282.f, false);               Space space89(89, 614.f, 958.f, false);
+    Space space37(37, 313.f, 250.f, false);               Space space90(90, 593.f, 985.f, false);
+    Space space38(38, 325.f, 222.f, false);               Space space91(91, 580.f, 1015.f, false);
+    Space space39(39, 346.f, 196.f, false);               Space space92(92, 576.f, 1046.f, false);
+    Space space40(40, 381.f, 202.f, false);               Space space93(93, 573.f, 1078.f, false);
+    Space space41(41, 418.f, 229.f, false);               Space space94(94, 578.f, 1112.f, false);
+    Space space42(42, 447.f, 263.f, false);               Space space95(95, 592.f, 1148.f, false);
+    Space space43(43, 467.f, 263.f, false);               Space space96(96, 621.f, 1178.f, false);
+    Space space44(44, 488.f, 318.f, false);               Space space97(97, 649.f, 1199.f, false);
+    Space space45(45, 507.f, 355.f, false);               Space space98(98, 684.f, 1208.f, false);
+    Space space46(46, 518.f, 383.f, false);               Space space99(99, 725.f, 1209.f, false);
+    Space space47(47, 523.f, 412.f, false);               Space space100(100, 776.f, 1210.f, false); //Final Space
+    Space space48(48, 528.f, 441.f, false);
+    Space space49(49, 528.f, 479.f, false);
+    Space space50(50, 526.f, 531.f, false);
+
+    //Used to quickly spit out all the space named without having to type them all out for array declaration [below]
+    /* for (int i = 1; i < 99; i++) {
+        cout << "space" << i << ", ";
+    }
+    cout << endl; */
 
     /*Each Space object is then added to an array so that they can be conveniently accessed to be
       compared to the player objects 
     */
     
-    //Space * arrayOfSpaces = new Space[97];
+    //Successful Array Declaration
+    //Spaces #53, #71, #88 are identical to Spaces #24, #10, #19 on the Gameboard (in that order)
+    Space arrayOfSpaces[97]{space1, space2, space3, space4, space5, space6, space7, space8, space9,
+        space10, space11, space12, space13, space14, space15, space16, space17, space18, space19, 
+        space20, space21, space22, space23, space24, space25, space26, space27, space28, space29, 
+        space30, space31, space32, space33, space34, space35, space36, space37, space38, space39, 
+        space40, space41, space42, space43, space44, space45, space46, space47, space48, space49, 
+        space50, space51, space52, space54, space55, space56, space57, space58, space59, space60, 
+        space61, space62, space63, space64, space65, space66, space67, space68, space69, space70,
+        space72, space73, space74, space75, space76, space77, space78, space79, space80, space81, 
+        space82, space83, space84, space85, space86, space87, space89, space90, space91, space92,
+        space93, space94, space95, space96, space97, space98, space99, space100};
 
-    //Space arrayOfSpaces = { space1, space2 };
+    //Checks Size of Array
+    //cout << sizeof(arrayOfSpaces) / sizeof(arrayOfSpaces[0]) << endl;
+    
+    Player Verdi("Verdi", "ImageFiles/Verdi_Edited.png", 1, 1000.f, 1000.f); ///aaaa
+    Verdi.setSprite();
+    //Verdi.getSprite().setPosition(Verdi.positionX, Verdi.positionY);
+    
+    //Successful ArrayList Declaration
+    //list<Player> listOfPlayers;
+    //listOfPlayers.push_back(player1);
+    //cout << listOfPlayers.size() << endl;
 
     //array<int, 1> arrayOfSpaces{ space1 };
 
-    //for (int i = 0; i < arrayofSpaces.length; i++) {}
     //int * numarray = new int[10];
 
     //-------------------------------------------------------
@@ -113,7 +140,7 @@ int main()
     //myCircle.setFillColor(sf::Color(0, 210, 255)); //Circle Color: Aqua
     myCircle.setFillColor(sf::Color(128, 128, 128)); //Circle Color: Gray
 
-    myCircle.setPosition((windowWidth) - myCircleRadius -200, (windowHeight / 10) - myCircleRadius); // Center circle
+    //myCircle.setPosition((windowWidth) - myCircleRadius -200, (windowHeight / 10) - myCircleRadius); // Center circle
 
     /*while (window.isOpen())
     {
@@ -133,12 +160,12 @@ int main()
     //Image Test
     //Image myImage;
     //myImage.loadFromFile("ImageFiles/Verdi.png");
-
+    
     //----
     Texture myImageTexture;
     //myImageTexture.loadFromFile("ImageFiles/Bach_Edited.png");
-    myImageTexture.loadFromFile("ImageFiles/Verdi_Edited.png");
-
+    myImageTexture.loadFromFile("ImageFiles/Holst_Edited.png");
+    
     Sprite mySprite;
     mySprite.setTexture(myImageTexture);
     mySprite.setPosition(0, 0);
@@ -163,7 +190,7 @@ int main()
     //-------------------------------------------------------
     //Mouse Initialization
     Mouse mouse;
-    //mouse.getPosition(window).x;
+        //mouse.getPosition(window).x;
 
     //-------------------------------------------------------
     //Event Execution
@@ -202,12 +229,16 @@ int main()
     //gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth, gameView_CameraHeight));
     //gameView.setCenter(597.5, 1250);
     //window.setView(View(gameView));
+    
+    //Initializes mouse position tracker
+    sf::Vector2i pixelPos;
+        // = sf::Mouse::getPosition(window);
 
-    sf::Vector2i pixelPos; //Initializes mouse position tracker
-    // = sf::Mouse::getPosition(window);
+    //Initializes mouse to world position converter
+    sf::Vector2f worldPos;
+        // = window.mapPixelToCoords(pixelPos);
 
-    sf::Vector2f worldPos; //Initializes mouse to world position converter
-    // = window.mapPixelToCoords(pixelPos);
+    int TEMPcounter = 89; //TEMPORARY
 
     while (window.isOpen())
     {
@@ -231,12 +262,15 @@ int main()
                 window.setView(View(gameView));
             }
 
-            //Temporary
-        /*    if (event.type == sf::Event::MouseButtonPressed && worldPos.x < 500 && worldPos.y < 500) {//mouse.getPosition().x < 500 && mouse.getPosition().y < 500) { //Temporary
-                gameView.setCenter(773,1207);
+            //Will not be in final build: Used to determine the center of each of the spaces by sending the approximate center of each space in the world [worldPos] via a mouse click to the console
+            if (event.type == sf::Event::MouseButtonPressed) {//}&& worldPos.x < 500 && worldPos.y < 500) {//mouse.getPosition().x < 500 && mouse.getPosition().y < 500) { //Temporary
+                cout << TEMPcounter << ": " << worldPos.x << "," << worldPos.y << endl;
+                TEMPcounter++;
+
+                //gameView.setCenter(773,1207);
                 //gameView.zoom(0.25f);
-                window.setView(View(gameView));
-            } */
+                //window.setView(View(gameView));
+            } 
 
             //Screen Movement Input with Arrow Keys from User
             if (event.type == Event::KeyPressed) {
@@ -256,6 +290,7 @@ int main()
             }
             //Temporary Sprite Value here but concept can be used so that the dice [both 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons can "follow" the "view/camera" wherever it is moved to -> Dice and Power should be accessed using mousePosition unlike the rest of the game[players, spaces, etc.] which instead should use worldPos 
             mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2);
+            //Verdi.setSpritePosition(1295, gameView.getCenter().y - gameView_CameraHeight / 2);
 
             //cout << gameView.getSize().y << endl;
             /*if (event.type == Event::MouseWheelScrolled) {
@@ -270,6 +305,8 @@ int main()
                
             } */
 
+            //myCircle.setPosition(mouse.getPosition(window).x -200, mouse.getPosition().y -350);
+            //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
         }
         pixelPos = sf::Mouse::getPosition(window); //Gets current mouse position in window
         worldPos = window.mapPixelToCoords(pixelPos); //Converts mouse position to world coordinates
@@ -291,10 +328,14 @@ int main()
         }
             
         window.draw(mySprite2); //Temporary
-            
+
+        //Verdi.getSprite().setPosition(windowWidth/2,windowHeight/2);//Verdi.positionX, Verdi.positionY); //aaaa
+        //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
+        window.draw(Verdi.getSprite(Verdi.positionX,Verdi.positionY));
+
         //Tests to find the approximate center of each of the spaces
         //cout << "Mouse: " << mouse.getPosition(window).x << "," << mouse.getPosition(window).y << endl; //Mouse Position
-        cout << "World: " << worldPos.x << "," << worldPos.y << endl; //World Position
+        //cout << "World: " << worldPos.x << "," << worldPos.y << endl; //World Position
 
         /*Attempt to resize images based on dimensions of window below
         Result: Initial failure led to unintentional success
