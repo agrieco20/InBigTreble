@@ -13,6 +13,9 @@
 #include "Player.h" //Designed to store the location of each player as they progress through the game. Player objects tend to communicate directly with the Space objects in order the determine where they need to travel to on the board.
 #include <list> //ArrayList Library
 
+#include <ctime>
+#include <random>
+
 using namespace sf;
 using namespace std;
 
@@ -73,34 +76,55 @@ int main()
     Space space49(49, 528.f, 479.f, false);
     Space space50(50, 526.f, 531.f, false);
 
+    //Special Duplicate Spaces
+    Space space71(71, 876.f, 1234.f, false);/* Also #10 */
+    Space space88(88, 646.f, 931.f, false);/* Also #19 */
+    Space space53(53, 477.f, 716.f, false);/* Also #24 */
+
     //Used to quickly spit out all the space named without having to type them all out for array declaration [below]
     /* for (int i = 1; i < 99; i++) {
         cout << "space" << i << ", ";
     }
     cout << endl; */
 
-    /*Each Space object is then added to an array so that they can be conveniently accessed to be
-      compared to the player objects 
-    */
-    
-    //Successful Array Declaration
-    //Spaces #53, #71, #88 are identical to Spaces #24, #10, #19 on the Gameboard (in that order)
-    Space arrayOfSpaces[97]{space1, space2, space3, space4, space5, space6, space7, space8, space9,
+    //Each Space object is then added to an array so that they can be conveniently accessed to be compared to the player objects
+    //Note: Spaces #53, #71, #88 are identical to Spaces #24, #10, #19 on the Gameboard (in that order)
+    Space arrayOfSpaces[100]{space1, space2, space3, space4, space5, space6, space7, space8, space9,
         space10, space11, space12, space13, space14, space15, space16, space17, space18, space19, 
         space20, space21, space22, space23, space24, space25, space26, space27, space28, space29, 
         space30, space31, space32, space33, space34, space35, space36, space37, space38, space39, 
         space40, space41, space42, space43, space44, space45, space46, space47, space48, space49, 
-        space50, space51, space52, space54, space55, space56, space57, space58, space59, space60, 
-        space61, space62, space63, space64, space65, space66, space67, space68, space69, space70,
+        space50, space51, space52, space53, space54, space55, space56, space57, space58, space59, space60, 
+        space61, space62, space63, space64, space65, space66, space67, space68, space69, space70, space71,
         space72, space73, space74, space75, space76, space77, space78, space79, space80, space81, 
-        space82, space83, space84, space85, space86, space87, space89, space90, space91, space92,
+        space82, space83, space84, space85, space86, space87, space88, space89, space90, space91, space92,
         space93, space94, space95, space96, space97, space98, space99, space100};
 
     //Checks Size of Array
     //cout << sizeof(arrayOfSpaces) / sizeof(arrayOfSpaces[0]) << endl;
     
-    Player Verdi("Verdi", "ImageFiles/Verdi_Edited.png", 1, 1000.f, 1000.f); ///aaaa
+    //All Possible Players are Defined Here
+    Player Vivaldi("Vivaldi", "ImageFiles/Vivaldi_Edited.png", 1, 320.f, 1749.f);
+    Player Mendelssohn("Mendelssohn", "ImageFiles/Mendelssohn_Edited.png", 1, 540.f, 1749.f);
+    Player Mozart("Mozart", "ImageFiles/Mozart_Edited.png", 1, 760.f, 1749.f);
+    Player Joplin("Joplin", "ImageFiles/Joplin_Edited.png", 1, 980.f, 1749.f);
+    
+    Player Bach("Bach", "ImageFiles/Bach_Edited.png", 1, 320.f, 1856.f);
+    Player Verdi("Verdi", "ImageFiles/Verdi_Edited.png", 1, 540.f, 1856.f); ///aaaa
+    Player Beethoven("Beethoven", "ImageFiles/Beethoven_Edited.png", 1, 760.f, 1856.f);
+    Player Holst("Holst", "ImageFiles/Holst_Edited.png", 1, 980.f, 1856.f);
+    
+    //Initiates the texture for each Player Object's Sprite and scales it to the appropriate size corresponding to the gameboard [only needs to be declared once in the code and has no impact on the starting location of each sprite]
+    Vivaldi.setSprite();
+    Mendelssohn.setSprite();
+    Mozart.setSprite();
+    Joplin.setSprite();
+
+    Bach.setSprite();
     Verdi.setSprite();
+    Beethoven.setSprite();
+    Holst.setSprite();
+    
     //Verdi.getSprite().setPosition(Verdi.positionX, Verdi.positionY);
     
     //Successful ArrayList Declaration
@@ -176,7 +200,8 @@ int main()
     mySprite2.setScale(0.5, 0.45); //All player sprites will need to be scaled
     //----
 
-    //----
+    //-------------------------------------------------------
+    //Initializes the Background Image, Used as the Gameboard
     Texture backgroundTexture;
     backgroundTexture.loadFromFile("ImageFiles/InBigTrebleGAMEBOARD_2.png");
 
@@ -184,7 +209,27 @@ int main()
     backgroundSprite.setTexture(backgroundTexture);
 
     backgroundSprite.setPosition(0, 0);
-    //----
+    
+    //-------------------------------------------------------
+    //Initializes the Dice Images, which are clicked on by the User so that they can simulate a dice being rolled when a random number is generated based on which dice is clicked
+    Texture Dice6_Texture;
+    Dice6_Texture.loadFromFile("ImageFiles/Dice_6_Sides.png");
+    
+    Sprite dice6_Sprite;
+    dice6_Sprite.setTexture(Dice6_Texture);
+
+    dice6_Sprite.setPosition(0, 0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
+    
+    //------
+    
+    Texture dice20_Texture;
+    Dice6_Texture.loadFromFile("ImageFiles/Dice_20_Sides.png");
+
+    Sprite dice20_Sprite;
+    dice20_Sprite.setTexture(dice20_Texture);
+
+    dice20_Sprite.setPosition(300, 0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
+
 
 
     //-------------------------------------------------------
@@ -222,8 +267,16 @@ int main()
     //dice6View.setViewport(FloatRect(0.8f, 0.f, 0.1, 0.1));
     //dice20View.setViewport(FloatRect(0.8f, 0.f, 0.1, 0.1));
     
-    int dice6Roll = rand() % 6 + 1;
-    int dice20Roll = rand() % 20 + 1;
+    int diceRoll = 0;
+    //int dice20Roll = 0;
+
+    //Depending on whether the user chooses the 6-Sided-Dice ("randDistro6") or the 20-Sided-Dice ("randDistro20"), the value (a true randomly generated number) is assigned to "diceRoll"
+    default_random_engine rand(time(0));
+    uniform_int_distribution <int>randDistro6(1, 6); //Randomly chooses value between 1 - 6
+    //int dice6Roll = rand() % 6 + 1;
+    uniform_int_distribution <int>randDistro20(1, 20); //Randomly chooses value between 1 - 20
+    //int dice20Roll = rand() % 20 + 1;
+
     //-------------------------------------------------
 
     //gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth, gameView_CameraHeight));
@@ -238,7 +291,10 @@ int main()
     sf::Vector2f worldPos;
         // = window.mapPixelToCoords(pixelPos);
 
-    int TEMPcounter = 89; //TEMPORARY
+    int rollDifferential = 0; //Records the difference between the space the player is currently on and the space they need to travel to after the dice has been rolled
+    bool gameover = false; //When switched to "true" the game is over
+    //Text text;
+    //text.setFont(font);
 
     while (window.isOpen())
     {
@@ -256,24 +312,63 @@ int main()
                 //sf::FloatRect gameView(0.f, 0.f, event.size.width, event.size.height);
                 //window.setView(sf::View(gameView)); //For View
                 
+                //---------
+                //Testing...(if works, will be able to resize borders without distorting the images...) [https://stackoverflow.com/questions/21363557/resizing-in-sfml-2-0]
                 
+                // /*
+                //Resizes the images/sprites based on window size (when the full implementation works)
+                Vector2f targetSize(gameView_CameraWidth, 1000);
+                backgroundSprite.setScale(targetSize.x / (backgroundSprite.getLocalBounds().width), targetSize.y / (backgroundSprite.getLocalBounds().height/2));
+                
+                gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth, gameView_CameraHeight));
+                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //"Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                window.setView(View(gameView));
+                // */
+                //---------
+                
+                //Original Code:
+                 /*
                 gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth + 200, gameView_CameraHeight));
                 gameView.setCenter(597.5 + 100, 1250);
                 window.setView(View(gameView));
+                 */
             }
-
+            
+            /*
             //Will not be in final build: Used to determine the center of each of the spaces by sending the approximate center of each space in the world [worldPos] via a mouse click to the console
             if (event.type == sf::Event::MouseButtonPressed) {//}&& worldPos.x < 500 && worldPos.y < 500) {//mouse.getPosition().x < 500 && mouse.getPosition().y < 500) { //Temporary
-                cout << TEMPcounter << ": " << worldPos.x << "," << worldPos.y << endl;
-                TEMPcounter++;
+                cout << rollDifferential << ": " << worldPos.x << "," << worldPos.y << endl;
+                rollDifferential++;
 
                 //gameView.setCenter(773,1207);
                 //gameView.zoom(0.25f);
                 //window.setView(View(gameView));
-            } 
+            } */
+
+            //Will not be in final build as is: Used to "roll the dice" before graphics were implemented to do the same thing [instead prints the "dice roll" to the console for the time being when the mouse is clicked]
+            //Needed Changes: In final version nothing is sent to the console and is displayed in the window with all the other graphics
+            if (event.type == sf::Event::MouseButtonPressed && gameover != true) {//}&& worldPos.x < 500 && worldPos.y < 500) {//mouse.getPosition().x < 500 && mouse.getPosition().y < 500) { //Temporary
+                diceRoll = randDistro20(rand);//rand() % 6 + 1;
+                cout << diceRoll << endl;
+                rollDifferential = Verdi.currentSpaceOccupied + diceRoll;
+
+                //"Verdi" would be replaced with the name of the arrayList and current iterator position in the final version
+                if (Verdi.currentSpaceOccupied != rollDifferential && rollDifferential < 101) {
+                    arrayOfSpaces[Verdi.currentSpaceOccupied - 1].isOccupied = false;
+                    Verdi.positionX = arrayOfSpaces[rollDifferential - 1].getCenterX();
+                    Verdi.positionY = arrayOfSpaces[rollDifferential - 1].getCenterY();
+                    Verdi.currentSpaceOccupied = arrayOfSpaces[rollDifferential - 1].getSpaceNum();
+                    //arrayOfSpaces[rollDifferential - 1].isOccupied = true;
+                }
+
+                if (Verdi.currentSpaceOccupied == 100) { //TEMPORARY printout to the console for when the player reaches the end of the game
+                    cout << "Verdi landed on Space 100 and WINS!!!" << endl;
+                    gameover = true;
+                }
+            }
 
             //Screen Movement Input with Arrow Keys from User
-            if (event.type == Event::KeyPressed) {
+            /*if (event.type == Event::KeyPressed) {
                 if (gameView.getCenter().y - gameView_CameraHeight/2 > 50 && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) { //Up Pressed
                     //gameView.getCenter().y - gameView_CameraHeight/2 > 0;
                     gameView.move(0, -50);
@@ -287,23 +382,63 @@ int main()
                     //mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2); //Temporary
                 }
                 
+            } */
+
+            //Screen Movement Input with Arrow Keys and Mouse Scroll from User
+            if (event.type == Event::KeyPressed || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
+                
+                //"Up Arrow" or "Page Up" Pressed
+                if (gameView.getCenter().y - gameView_CameraHeight / 2 > 50 && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) {
+                    //gameView.getCenter().y - gameView_CameraHeight/2 > 0;
+                    gameView.move(0, -50);
+                    window.setView(View(gameView));
+                    //mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2); //Temporary
+                }
+
+                /*
+                //User Scrolls Up (Has its own code because the scrolling above was too quick with the previously set parameters but were appropriate with the buttons being pressed)
+                if (gameView.getCenter().y - gameView_CameraHeight / 2 > 50 && event.mouseWheelScroll.delta > 0) {
+                    gameView.move(0, -10);
+                    window.setView(View(gameView));
+                }
+                */
+
+                //"Down Arrow" or "Page Down" Pressed
+                if (gameView.getCenter().y + gameView_CameraHeight / 2 < 1950 && (event.key.code == Keyboard::Down || event.key.code == Keyboard::PageDown || event.mouseWheelScroll.delta < 0)) {
+                    gameView.move(0, 50);
+                    window.setView(View(gameView));
+                    //mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2); //Temporary
+                }
+
+                /*
+                //User Scrolls Down (Has its own code because the scrolling above was too quick with the previously set parameters but were appropriate with the buttons being pressed)
+                if (gameView.getCenter().y - gameView_CameraHeight / 2 > 50 && event.mouseWheelScroll.delta < 0) {
+                    gameView.move(0, 10);
+                    window.setView(View(gameView));
+                }
+                */
+
             }
+
             //Temporary Sprite Value here but concept can be used so that the dice [both 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons can "follow" the "view/camera" wherever it is moved to -> Dice and Power should be accessed using mousePosition unlike the rest of the game[players, spaces, etc.] which instead should use worldPos 
             mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2);
             //Verdi.setSpritePosition(1295, gameView.getCenter().y - gameView_CameraHeight / 2);
 
+            //***PLACE BOTH DICE AND POWER OPTIONS HERE***
+            
+
             //cout << gameView.getSize().y << endl;
             /*if (event.type == Event::MouseWheelScrolled) {
                 if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                    if (event.mouseWheelScroll.y > 0) {
-                        cout << "User Scrolled Up - " << event.mouseWheelScroll.y << endl;
+                    if (event.mouseWheelScroll.delta > 0) {
+                        cout << "User Scrolled Up - " << event.mouseWheelScroll.delta << endl;
                     }
-                    if (event.mouseWheelScroll.y < 0) {
-                        cout << "User Scrolled Down - " << event.mouseWheelScroll.y << endl;
+                    if (event.mouseWheelScroll.delta < 0) {
+                        cout << "User Scrolled Down - " << event.mouseWheelScroll.delta << endl;
                     }
                 }
                
-            } */
+            }*/
 
             //myCircle.setPosition(mouse.getPosition(window).x -200, mouse.getPosition().y -350);
             //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
@@ -320,6 +455,9 @@ int main()
 
         window.draw(backgroundSprite);
 
+        window.draw(dice6_Sprite);
+        window.draw(dice20_Sprite);
+
         //window.draw(myCircle); //Temporary
         
         //Temporary
@@ -331,7 +469,15 @@ int main()
 
         //Verdi.getSprite().setPosition(windowWidth/2,windowHeight/2);//Verdi.positionX, Verdi.positionY); //aaaa
         //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
-        window.draw(Verdi.getSprite(Verdi.positionX,Verdi.positionY));
+        window.draw(Vivaldi.getSprite(Vivaldi.positionX, Vivaldi.positionY));
+        window.draw(Mendelssohn.getSprite(Mendelssohn.positionX, Mendelssohn.positionY));
+        window.draw(Mozart.getSprite(Mozart.positionX, Mozart.positionY));
+        window.draw(Joplin.getSprite(Joplin.positionX, Joplin.positionY));
+
+        window.draw(Bach.getSprite(Bach.positionX, Bach.positionY));
+        window.draw(Verdi.getSprite(Verdi.positionX, Verdi.positionY));
+        window.draw(Beethoven.getSprite(Beethoven.positionX, Beethoven.positionY));
+        window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
 
         //Tests to find the approximate center of each of the spaces
         //cout << "Mouse: " << mouse.getPosition(window).x << "," << mouse.getPosition(window).y << endl; //Mouse Position
@@ -464,6 +610,6 @@ int main()
         window.display();
     }
 
-    cout << "Hello World!" << endl;
+    cout << "Hello World!" << endl; //Not Permanent
     return 0;
 }

@@ -8,11 +8,11 @@
 #include "Space.h"
 using namespace std;
 
-Space::Space(int SpaceNum, float centerX, float centerY, bool isOccupied) {
-	this->spaceNum = spaceNum;
-	this->centerX = centerX;
-	this->centerY = centerY;
-	this->isOccupied = isOccupied;
+Space::Space(int spaceNumber, float xPos, float yPos, bool occupied) {
+	spaceNum = spaceNumber;
+	centerX = xPos;
+	centerY = yPos;
+	isOccupied = occupied;
 }
 
 int Space::getSpaceNum() {
