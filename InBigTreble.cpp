@@ -2,7 +2,7 @@
  * @author: Anthony Grieco
  * Date: 1/19/2022
  *
- * Description: Designed to simulate the movement of players as they travel around the game board
+ * Description: Designed to simulate the movement of players as they travel around the game board.
  * Intended only for the use of Dr. Stephen Grieco. This program was built for the benefit of his students and to bring his game "In Big Treble" to life.
 */
 
@@ -67,7 +67,7 @@ int main()
     Space space40(40, 381.f, 202.f, false);               Space space93(93, 573.f, 1078.f, false);
     Space space41(41, 418.f, 229.f, false);               Space space94(94, 578.f, 1112.f, false);
     Space space42(42, 447.f, 263.f, false);               Space space95(95, 592.f, 1148.f, false);
-    Space space43(43, 467.f, 263.f, false);               Space space96(96, 621.f, 1178.f, false);
+    Space space43(43, 467.f, 283.f, false);               Space space96(96, 621.f, 1178.f, false);
     Space space44(44, 488.f, 318.f, false);               Space space97(97, 649.f, 1199.f, false);
     Space space45(45, 507.f, 355.f, false);               Space space98(98, 684.f, 1208.f, false);
     Space space46(46, 518.f, 383.f, false);               Space space99(99, 725.f, 1209.f, false);
@@ -142,8 +142,13 @@ int main()
     //***Window***
     int windowWidth = 1750;//1195;//2384; //temporary value
     int windowHeight = 2000;//3990 - 3990/2; //temporary value
-    float myCircleRadius = 200.0;
+    float myCircleRadius = 200.0; //TEMPORARY
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "In Big Treble");
+
+    View gameView;//Gameboard Camera View
+
+    float gameView_CameraWidth = 1195;
+    float gameView_CameraHeight = 597.5;
 
     /*if (window.getSize().x > windowWidth) {
         cout << "Width Bigger" << endl;
@@ -159,7 +164,7 @@ int main()
         cout << "Height Smaller" << endl;
     }*/
 
-    //***Circle***
+    //***Circle*** //CIRCLE IS TEMPORARY
     sf::CircleShape myCircle(myCircleRadius, 100);
     //myCircle.setFillColor(sf::Color(0, 210, 255)); //Circle Color: Aqua
     myCircle.setFillColor(sf::Color(128, 128, 128)); //Circle Color: Gray
@@ -194,10 +199,12 @@ int main()
     mySprite.setTexture(myImageTexture);
     mySprite.setPosition(0, 0);
     
+    /*
     Sprite mySprite2;
     mySprite2.setTexture(myImageTexture);
     //mySprite2.setPosition(1195, 0);
     mySprite2.setScale(0.5, 0.45); //All player sprites will need to be scaled
+    */
     //----
 
     //-------------------------------------------------------
@@ -211,26 +218,62 @@ int main()
     backgroundSprite.setPosition(0, 0);
     
     //-------------------------------------------------------
+    //Initializes a Black Box used as an underlay/background for the buttons [both Dice and POWER] to be 'placed' on
+    RectangleShape buttonBlock;
+    buttonBlock.setSize(Vector2f(gameView_CameraWidth, 184)); //680
+    buttonBlock.setFillColor(Color(0, 0, 0)); //Black
+
+    //-------------------------------------------------------
     //Initializes the Dice Images, which are clicked on by the User so that they can simulate a dice being rolled when a random number is generated based on which dice is clicked
+    //6 Sided Dice
     Texture Dice6_Texture;
     Dice6_Texture.loadFromFile("ImageFiles/Dice_6_Sides.png");
     
     Sprite dice6_Sprite;
     dice6_Sprite.setTexture(Dice6_Texture);
+    
+    dice6_Sprite.setScale(0.75, 0.75);
+    //dice6_Sprite.setPosition(0, 10);
+    ///dice6_Sprite.setPosition(10, 0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
 
-    dice6_Sprite.setPosition(0, 0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
-    
     //------
-    
+    //20 Sided Dice
     Texture dice20_Texture;
-    Dice6_Texture.loadFromFile("ImageFiles/Dice_20_Sides.png");
+    dice20_Texture.loadFromFile("ImageFiles/Dice_20_Sides.png");
 
     Sprite dice20_Sprite;
     dice20_Sprite.setTexture(dice20_Texture);
 
-    dice20_Sprite.setPosition(300, 0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
+    dice20_Sprite.setScale(0.5, 0.5);
+    //dice20_Sprite.setPosition(5, 180);
+    ///dice20_Sprite.setPosition(200, 5);
+    
+    //-------------------------------------------------------
+    //Initializes the "Dr. Grieco has the POWER!!" icon, which when clicked, will allow the user to open the 'backdoor mechanic' [will let them change the locations of the players on the board if a special condition is met or if an error occurs]
+    Texture GriecoPower_Texture;
+    GriecoPower_Texture.loadFromFile("ImageFiles/GriecoPower.png");
+    
+    Sprite GriecoPower_Sprite;
+    GriecoPower_Sprite.setTexture(GriecoPower_Texture);
 
+    GriecoPower_Sprite.setScale(0.45,0.45);
+    //GriecoPower_Sprite.setPosition(0, 400);
+    //GriecoPower_Sprite.setPosition(400, 0);
+    ///GriecoPower_Sprite.setPosition(810,0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
 
+    //-------------------------------------------------------
+    //Initializes the font type: Times New Roman
+    Font calibriFont;
+    calibriFont.loadFromFile("FontFiles/Calibri Regular.ttf");
+    
+    //-------------------------------------------------------
+    //Initializes the text used to indicate to the use what the dice roll was (removes necessity of the console)
+    Text diceRoll_Text;
+    diceRoll_Text.setFont(calibriFont);
+    diceRoll_Text.setCharacterSize(48);
+    diceRoll_Text.setStyle(Text::Bold);
+    diceRoll_Text.setFillColor(Color(255, 255, 255)); //White Text
+    diceRoll_Text.setString("Dice Roll: ");
 
     //-------------------------------------------------------
     //Mouse Initialization
@@ -253,10 +296,13 @@ int main()
     //gameView.zoom(0.5);
     //gameView.setViewport(FloatRect(0.f, 0.f, 1.f, 1.f));
     //-------------
+    
+    /*
     View gameView;//Gameboard Camera View
 
     float gameView_CameraWidth = 1195;
     float gameView_CameraHeight = 597.5;
+    */
 
     //-------------------------------------------------
     View dice6View;
@@ -345,50 +391,58 @@ int main()
                 //window.setView(View(gameView));
             } */
 
-            //Will not be in final build as is: Used to "roll the dice" before graphics were implemented to do the same thing [instead prints the "dice roll" to the console for the time being when the mouse is clicked]
-            //Needed Changes: In final version nothing is sent to the console and is displayed in the window with all the other graphics
-            if (event.type == sf::Event::MouseButtonPressed && gameover != true) {//}&& worldPos.x < 500 && worldPos.y < 500) {//mouse.getPosition().x < 500 && mouse.getPosition().y < 500) { //Temporary
-                diceRoll = randDistro20(rand);//rand() % 6 + 1;
-                cout << diceRoll << endl;
-                rollDifferential = Verdi.currentSpaceOccupied + diceRoll;
+            //When either one of the dice is clicked, the result of that random roll is displayed on the screen and is automatically used to move the player's piece around the board
+            //In addition, if the "POWER" button is clicked, then it opens up a secret menu that allows the user to change player positions at their discretion
+            if (event.type == sf::Event::MouseButtonPressed && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361) || (worldPos.x > 805 && worldPos.x < 1195)) && gameover != true) {
+                
+                //If one of the two dice buttons are chosen...
+                if ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361)) {
 
-                //"Verdi" would be replaced with the name of the arrayList and current iterator position in the final version
-                if (Verdi.currentSpaceOccupied != rollDifferential && rollDifferential < 101) {
-                    arrayOfSpaces[Verdi.currentSpaceOccupied - 1].isOccupied = false;
-                    Verdi.positionX = arrayOfSpaces[rollDifferential - 1].getCenterX();
-                    Verdi.positionY = arrayOfSpaces[rollDifferential - 1].getCenterY();
-                    Verdi.currentSpaceOccupied = arrayOfSpaces[rollDifferential - 1].getSpaceNum();
-                    //arrayOfSpaces[rollDifferential - 1].isOccupied = true;
+                    //If 6 Sided Dice Chosen, assign random value between 1 - 6
+                    if (worldPos.x > 20 && worldPos.x <= 190) {
+                        diceRoll = randDistro6(rand);
+                    }
+
+                    //If 20 Sided Dice Chosen, assign random value between 1 - 20
+                    else if (worldPos.x > 213 && worldPos.x < 361) {
+                        diceRoll = randDistro20(rand);
+                    }
+
+                    cout << diceRoll << endl; //TEMPORARY
+                    diceRoll_Text.setString("Dice Roll: " + to_string(diceRoll));
+                    rollDifferential = Verdi.currentSpaceOccupied + diceRoll; //"Verdi" to be changed to the 'current player arraylist' with apprpriate rotating index depending on whose turn it is
+
+                    //"Verdi" would be replaced with the name of the arrayList and current iterator position in the final version
+                    //Moves the pieces around the board
+                    if (Verdi.currentSpaceOccupied != rollDifferential && rollDifferential < 101) {
+                        arrayOfSpaces[Verdi.currentSpaceOccupied - 1].isOccupied = false;
+                        Verdi.positionX = arrayOfSpaces[rollDifferential - 1].getCenterX();
+                        Verdi.positionY = arrayOfSpaces[rollDifferential - 1].getCenterY();
+                        Verdi.currentSpaceOccupied = arrayOfSpaces[rollDifferential - 1].getSpaceNum();
+                        //arrayOfSpaces[rollDifferential - 1].isOccupied = true;
+                    }
+
+                    if (Verdi.currentSpaceOccupied == 100) {
+                        cout << "Verdi landed on Space 100 and WINS!!!" << endl; //TEMPORARY (prints to the console when the player reaches the end of the game)
+                        gameover = true;
+                    }
                 }
-
-                if (Verdi.currentSpaceOccupied == 100) { //TEMPORARY printout to the console for when the player reaches the end of the game
-                    cout << "Verdi landed on Space 100 and WINS!!!" << endl;
-                    gameover = true;
+                //If the "POWER" button is chosen... [Button within this Range: (worldPos.x > 805 && worldPos.x < 1195)]
+                else {
+                    cout << "POWER!!" << endl; //TEMPORARY (tests to make sure button works)
+                    //Need to change from gameView to secretView when the "POWER" button is pressed
+                    //Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
+                    //Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
+                    //Need to reimplement both dice and text that tells user what they rolled
+                    //Need to implement a return button that changes the view back from secretView to gameView
                 }
             }
 
-            //Screen Movement Input with Arrow Keys from User
-            /*if (event.type == Event::KeyPressed) {
-                if (gameView.getCenter().y - gameView_CameraHeight/2 > 50 && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) { //Up Pressed
-                    //gameView.getCenter().y - gameView_CameraHeight/2 > 0;
-                    gameView.move(0, -50);
-                    window.setView(View(gameView));
-                    //mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2); //Temporary
-                }
-
-                if (gameView.getCenter().y + gameView_CameraHeight/2 < 1950 && (event.key.code == Keyboard::Down || event.key.code == Keyboard::PageDown)) { //Down Pressed
-                    gameView.move(0, 50);
-                    window.setView(View(gameView));
-                    //mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2); //Temporary
-                }
-                
-            } */
-
-            //Screen Movement Input with Arrow Keys and Mouse Scroll from User
-            if (event.type == Event::KeyPressed || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
+            //Screen Movement Input with Arrow Keys and Mouse Scroll from User (if user input [via arrows and scrolling] does not exceeed the values set to "lock" the screen, then the Camera will move to cover a different portion of the screen based on the user's inputs)
+            if (event.type == Event::KeyPressed) { //FOLLOWING WILL BE IMPLEMENTED WHEN SCROLLING WORKS: || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
                 
                 //"Up Arrow" or "Page Up" Pressed
-                if (gameView.getCenter().y - gameView_CameraHeight / 2 > 50 && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) {
+                if (gameView.getCenter().y - gameView_CameraHeight / 2 > -130/*50*/ && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) {
                     //gameView.getCenter().y - gameView_CameraHeight/2 > 0;
                     gameView.move(0, -50);
                     window.setView(View(gameView));
@@ -397,7 +451,7 @@ int main()
 
                 /*
                 //User Scrolls Up (Has its own code because the scrolling above was too quick with the previously set parameters but were appropriate with the buttons being pressed)
-                if (gameView.getCenter().y - gameView_CameraHeight / 2 > 50 && event.mouseWheelScroll.delta > 0) {
+                if (gameView.getCenter().y - gameView_CameraHeight / 2 > -130 /*50*/ /* && event.mouseWheelScroll.delta > 0) {
                     gameView.move(0, -10);
                     window.setView(View(gameView));
                 }
@@ -419,14 +473,17 @@ int main()
                 */
 
             }
-
-            //Temporary Sprite Value here but concept can be used so that the dice [both 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons can "follow" the "view/camera" wherever it is moved to -> Dice and Power should be accessed using mousePosition unlike the rest of the game[players, spaces, etc.] which instead should use worldPos 
-            mySprite2.setPosition(1195, gameView.getCenter().y - gameView_CameraHeight/2);
-            //Verdi.setSpritePosition(1295, gameView.getCenter().y - gameView_CameraHeight / 2);
-
-            //***PLACE BOTH DICE AND POWER OPTIONS HERE***
             
+            //-------------------------------------------------
+            //The dice [both the 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons/buttons can now "follow" the gameView camera to wherever it is moved to -> Dice and Power can be accessed using a combination and translation between the Mouse's Position (pixelPos) and the World's Position (worldPos) [see below]
+            buttonBlock.setPosition(0, gameView.getCenter().y - gameView_CameraHeight / 2);
+            diceRoll_Text.setPosition(400, (gameView.getCenter().y - gameView_CameraHeight / 2) + 55);
 
+            dice6_Sprite.setPosition(10, (gameView.getCenter().y - gameView_CameraHeight / 2) + 5);
+            dice20_Sprite.setPosition(200, (gameView.getCenter().y - gameView_CameraHeight / 2));
+            GriecoPower_Sprite.setPosition(805, (gameView.getCenter().y - gameView_CameraHeight / 2) + 0);
+            
+            //Tests if scoll is working
             //cout << gameView.getSize().y << endl;
             /*if (event.type == Event::MouseWheelScrolled) {
                 if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
@@ -443,20 +500,17 @@ int main()
             //myCircle.setPosition(mouse.getPosition(window).x -200, mouse.getPosition().y -350);
             //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
         }
+        
+        //-------------------------------------------------
         pixelPos = sf::Mouse::getPosition(window); //Gets current mouse position in window
         worldPos = window.mapPixelToCoords(pixelPos); //Converts mouse position to world coordinates
         
-        //window.clear(sf::Color(255, 255, 255)); // Background Color: White
-        
-        //View gameView(FloatRect(0, 0, 175.f, 200.f));
-        //window.setView(gameView);
-
+        //-------------------------------------------------
+        //The following commands are what are actually producing the graphics throughout the program
         window.clear(sf::Color(0, 0, 0)); //Background Color: Black
+        //window.clear(sf::Color(255, 255, 255)); // Background Color: White
 
         window.draw(backgroundSprite);
-
-        window.draw(dice6_Sprite);
-        window.draw(dice20_Sprite);
 
         //window.draw(myCircle); //Temporary
         
@@ -465,7 +519,7 @@ int main()
             window.draw(mySprite);
         }
             
-        window.draw(mySprite2); //Temporary
+        //window.draw(mySprite2); //Temporary
 
         //Verdi.getSprite().setPosition(windowWidth/2,windowHeight/2);//Verdi.positionX, Verdi.positionY); //aaaa
         //Verdi.setSpritePosition(mouse.getPosition().x, mouse.getPosition().y);
@@ -478,6 +532,17 @@ int main()
         window.draw(Verdi.getSprite(Verdi.positionX, Verdi.positionY));
         window.draw(Beethoven.getSprite(Beethoven.positionX, Beethoven.positionY));
         window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
+
+        //The Black Box Background along with the Dice and POWER buttons only appear if the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
+        if (mouse.getPosition().y < 680) {
+            window.draw(buttonBlock);
+            window.draw(diceRoll_Text);
+
+            window.draw(dice6_Sprite);
+            window.draw(dice20_Sprite);
+            window.draw(GriecoPower_Sprite);
+            
+        }
 
         //Tests to find the approximate center of each of the spaces
         //cout << "Mouse: " << mouse.getPosition(window).x << "," << mouse.getPosition(window).y << endl; //Mouse Position
@@ -605,6 +670,9 @@ int main()
         if (window.getSize().y < windowHeight) {
 
             cout << "Height Smaller" << endl; //Not Permanent
+        } */
+        /*if (mouse.getPosition().y < 680) {
+            window.draw(diceRoll_Text);
         } */
 
         window.display();

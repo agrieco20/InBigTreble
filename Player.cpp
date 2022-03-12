@@ -35,7 +35,7 @@ void Player::setSprite() {
 
 	//Sprite player_Sprite;
 	player_Sprite.setTexture(spriteTexture);
-	player_Sprite.setScale(0.5, 0.45);
+	player_Sprite.setScale(0.5, 0.48);
 	//player_Sprite.setPosition(500, 500);
 
 	//return player_Sprite;
