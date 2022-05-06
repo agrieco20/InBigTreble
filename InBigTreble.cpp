@@ -191,6 +191,8 @@ int main()
     //myImage.loadFromFile("ImageFiles/Verdi.png");
     
     //----
+    //TEMPORARY
+
     Texture myImageTexture;
     //myImageTexture.loadFromFile("ImageFiles/Bach_Edited.png");
     myImageTexture.loadFromFile("ImageFiles/Holst_Edited.png");
@@ -216,9 +218,19 @@ int main()
     backgroundSprite.setTexture(backgroundTexture);
 
     backgroundSprite.setPosition(0, 0);
+
+    //-------------------------------------------------------
+    //Initializes the Background Image, Used as the Gameboard
+    Texture secretMenuTexture;
+    secretMenuTexture.loadFromFile("ImageFiles/InBigTrebleGAMEBOARD_2_secretView.png");
+
+    Sprite secretMenuSprite;
+    secretMenuSprite.setTexture(secretMenuTexture);
+
+    secretMenuSprite.setPosition(0, 0);
     
     //-------------------------------------------------------
-    //Initializes a Black Box used as an underlay/background for the buttons [both Dice and POWER] to be 'placed' on
+    //Initializes a Black Box used as an underlay/background for the buttons [both Dice and POWER] to be 'placed' on in the mini menu
     RectangleShape buttonBlock;
     buttonBlock.setSize(Vector2f(gameView_CameraWidth, 184)); //680
     buttonBlock.setFillColor(Color(0, 0, 0)); //Black
@@ -339,6 +351,7 @@ int main()
 
     int rollDifferential = 0; //Records the difference between the space the player is currently on and the space they need to travel to after the dice has been rolled
     bool gameover = false; //When switched to "true" the game is over
+    bool secretMenuView = false; //When true, the "Secret Menu" is activated so that the user has the POWER to move players/teams around as the desire (ex: if a team plays a treasure card or if the game were to crash the user can place players/teams back where the previously were)
     //Text text;
     //text.setFont(font);
 
@@ -365,9 +378,10 @@ int main()
                 //Resizes the images/sprites based on window size (when the full implementation works)
                 Vector2f targetSize(gameView_CameraWidth, 1000);
                 backgroundSprite.setScale(targetSize.x / (backgroundSprite.getLocalBounds().width), targetSize.y / (backgroundSprite.getLocalBounds().height/2));
-                
+                secretMenuSprite.setScale(targetSize.x / (secretMenuSprite.getLocalBounds().width), targetSize.y / (secretMenuSprite.getLocalBounds().height/2));
+
                 gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth, gameView_CameraHeight));
-                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //"Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
                 window.setView(View(gameView));
                 // */
                 //---------
@@ -393,7 +407,7 @@ int main()
 
             //When either one of the dice is clicked, the result of that random roll is displayed on the screen and is automatically used to move the player's piece around the board
             //In addition, if the "POWER" button is clicked, then it opens up a secret menu that allows the user to change player positions at their discretion
-            if (event.type == sf::Event::MouseButtonPressed && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361) || (worldPos.x > 805 && worldPos.x < 1195)) && gameover != true) {
+            if (event.type == sf::Event::MouseButtonPressed && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */  || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
                 
                 //If one of the two dice buttons are chosen...
                 if ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361)) {
@@ -423,17 +437,23 @@ int main()
                     }
 
                     if (Verdi.currentSpaceOccupied == 100) {
-                        cout << "Verdi landed on Space 100 and WINS!!!" << endl; //TEMPORARY (prints to the console when the player reaches the end of the game)
+                        cout << "Verdi landed on Space 100 and WINS!!!" << endl; //TEMPORARY (prints to the console when the player reaches the end of the game), REPLACEMENT: Prints that Player/Team X won the game
                         gameover = true;
                     }
                 }
                 //If the "POWER" button is chosen... [Button within this Range: (worldPos.x > 805 && worldPos.x < 1195)]
                 else {
                     cout << "POWER!!" << endl; //TEMPORARY (tests to make sure button works)
+                    if (secretMenuView == true) {
+                        secretMenuView = false;
+                    }
+                    else {
+                        secretMenuView = true;
+                    }
                     //Need to change from gameView to secretView when the "POWER" button is pressed
                     //Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
                     //Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
-                    //Need to reimplement both dice and text that tells user what they rolled
+                    //Need to reimplement both dice and text that tells user what they rolled (but doesn't actually move the player while on the secretView)
                     //Need to implement a return button that changes the view back from secretView to gameView
                 }
             }
@@ -512,6 +532,11 @@ int main()
 
         window.draw(backgroundSprite);
 
+        if (secretMenuView == true) {
+            //window.draw(backgroundSprite);
+            window.draw(secretMenuSprite); //Temporary, will also pull up a menu that will allow the player positions to be changed
+        }
+
         //window.draw(myCircle); //Temporary
         
         //Temporary
@@ -541,7 +566,6 @@ int main()
             window.draw(dice6_Sprite);
             window.draw(dice20_Sprite);
             window.draw(GriecoPower_Sprite);
-            
         }
 
         //Tests to find the approximate center of each of the spaces
