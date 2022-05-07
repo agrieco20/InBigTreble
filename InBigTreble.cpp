@@ -269,24 +269,84 @@ int main()
     GriecoPower_Sprite.setTexture(GriecoPower_Texture);
 
     GriecoPower_Sprite.setScale(0.45,0.45);
-    //GriecoPower_Sprite.setPosition(0, 400);
-    //GriecoPower_Sprite.setPosition(400, 0);
-    ///GriecoPower_Sprite.setPosition(810,0); //X value TEMPORARY and Y value will need to be able to move as the "gameView" changes/is moved by the user with the arrow keys (and eventually with scrolling)
+    
+    //-------------------------------------------------------
+    //Initializes the "Dr. Grieco lets the POWER Return!!" icon, which when clicked, will allow the user to close the 'backdoor mechanic' and resume the normal game
+    Texture GriecoPowerReturn_Texture;
+    GriecoPowerReturn_Texture.loadFromFile("ImageFiles/GriecoPower_Return.png");
+
+    Sprite GriecoPowerReturn_Sprite;
+    GriecoPowerReturn_Sprite.setTexture(GriecoPowerReturn_Texture);
+
+    //GriecoPower_Sprite.setScale(0.45, 0.45);
+
 
     //-------------------------------------------------------
-    //Initializes the font type: Times New Roman
+    //Initializes the font type: Calibri
     Font calibriFont;
     calibriFont.loadFromFile("FontFiles/Calibri Regular.ttf");
     
     //-------------------------------------------------------
-    //Initializes the text used to indicate to the use what the dice roll was (removes necessity of the console)
+    //Initializes the text used to indicate to the use what the dice roll was (removes necessity of reading it from the console script)
     Text diceRoll_Text;
     diceRoll_Text.setFont(calibriFont);
     diceRoll_Text.setCharacterSize(48);
     diceRoll_Text.setStyle(Text::Bold);
     diceRoll_Text.setFillColor(Color(255, 255, 255)); //White Text
-    diceRoll_Text.setString("Dice Roll: ");
+    diceRoll_Text.setString("Dice Roll: "); //Reset for when no dice have been thrown yet
 
+    string bob = "dude";
+    //-------------------------------------------------------
+    //TEMPORARY: Try to reduce the following section into a method stored in the Player Class Declaration
+    //Initializes the text used to indicate what space each of the players are currently on [only active whenever the "Secret Menu" has been opened]
+    Text Vivaldi_currSpacePos_Text;
+    Vivaldi_currSpacePos_Text.setFont(calibriFont);
+    Vivaldi_currSpacePos_Text.setCharacterSize(100);
+    Vivaldi_currSpacePos_Text.setStyle(Text::Bold);
+    Vivaldi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Mendelssohn_currSpacePos_Text;
+    Mendelssohn_currSpacePos_Text.setFont(calibriFont);
+    Mendelssohn_currSpacePos_Text.setCharacterSize(100);
+    Mendelssohn_currSpacePos_Text.setStyle(Text::Bold);
+    Mendelssohn_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Mozart_currSpacePos_Text;
+    Mozart_currSpacePos_Text.setFont(calibriFont);
+    Mozart_currSpacePos_Text.setCharacterSize(100);
+    Mozart_currSpacePos_Text.setStyle(Text::Bold);
+    Mozart_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Joplin_currSpacePos_Text;
+    Joplin_currSpacePos_Text.setFont(calibriFont);
+    Joplin_currSpacePos_Text.setCharacterSize(100);
+    Joplin_currSpacePos_Text.setStyle(Text::Bold);
+    Joplin_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Bach_currSpacePos_Text;
+    Bach_currSpacePos_Text.setFont(calibriFont);
+    Bach_currSpacePos_Text.setCharacterSize(100);
+    Bach_currSpacePos_Text.setStyle(Text::Bold);
+    Bach_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Verdi_currSpacePos_Text;
+    Verdi_currSpacePos_Text.setFont(calibriFont);
+    Verdi_currSpacePos_Text.setCharacterSize(100);
+    Verdi_currSpacePos_Text.setStyle(Text::Bold);
+    Verdi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Beethoven_currSpacePos_Text;
+    Beethoven_currSpacePos_Text.setFont(calibriFont);
+    Beethoven_currSpacePos_Text.setCharacterSize(100);
+    Beethoven_currSpacePos_Text.setStyle(Text::Bold);
+    Beethoven_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+
+    Text Holst_currSpacePos_Text;
+    Holst_currSpacePos_Text.setFont(calibriFont);
+    Holst_currSpacePos_Text.setCharacterSize(100);
+    Holst_currSpacePos_Text.setStyle(Text::Bold);
+    Holst_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    
     //-------------------------------------------------------
     //Mouse Initialization
     Mouse mouse;
@@ -352,8 +412,6 @@ int main()
     int rollDifferential = 0; //Records the difference between the space the player is currently on and the space they need to travel to after the dice has been rolled
     bool gameover = false; //When switched to "true" the game is over
     bool secretMenuView = false; //When true, the "Secret Menu" is activated so that the user has the POWER to move players/teams around as the desire (ex: if a team plays a treasure card or if the game were to crash the user can place players/teams back where the previously were)
-    //Text text;
-    //text.setFont(font);
 
     while (window.isOpen())
     {
@@ -407,7 +465,7 @@ int main()
 
             //When either one of the dice is clicked, the result of that random roll is displayed on the screen and is automatically used to move the player's piece around the board
             //In addition, if the "POWER" button is clicked, then it opens up a secret menu that allows the user to change player positions at their discretion
-            if (event.type == sf::Event::MouseButtonPressed && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */  || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
+            if (event.type == Event::MouseButtonPressed && secretMenuView == false && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */  || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
                 
                 //If one of the two dice buttons are chosen...
                 if ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361)) {
@@ -444,22 +502,48 @@ int main()
                 //If the "POWER" button is chosen... [Button within this Range: (worldPos.x > 805 && worldPos.x < 1195)]
                 else {
                     cout << "POWER!!" << endl; //TEMPORARY (tests to make sure button works)
-                    if (secretMenuView == true) {
-                        secretMenuView = false;
-                    }
-                    else {
+                    //if (secretMenuView == true) {
+                        //secretMenuView = false;
+                    //}
+                    //else {
                         secretMenuView = true;
-                    }
-                    //Need to change from gameView to secretView when the "POWER" button is pressed
-                    //Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
-                    //Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
+                        gameView.zoom(3.375);
+                        gameView.setCenter((gameView_CameraWidth / 2) + 1500, (gameView_CameraHeight / 2) + 650);
+                        window.setView(View(gameView));
+
+                        //Text for each possible player is updated with its most recent values
+                        Vivaldi_currSpacePos_Text.setString(Vivaldi.getName() + "\t\tCurrent Occupied Space: " + to_string(Vivaldi.currentSpaceOccupied));
+                        Mendelssohn_currSpacePos_Text.setString(Mendelssohn.getName() + "\t\tCurrent Occupied Space: " + to_string(Mendelssohn.currentSpaceOccupied));
+                        Mozart_currSpacePos_Text.setString(Mozart.getName() + "\t\tCurrent Occupied Space: " + to_string(Mozart.currentSpaceOccupied));
+                        Joplin_currSpacePos_Text.setString(Joplin.getName() + "\t\tCurrent Occupied Space: " + to_string(Joplin.currentSpaceOccupied));
+                        Bach_currSpacePos_Text.setString(Bach.getName() + "\t\tCurrent Occupied Space: " + to_string(Bach.currentSpaceOccupied));
+                        Verdi_currSpacePos_Text.setString(Verdi.getName() + "\t\tCurrent Occupied Space: " + to_string(Verdi.currentSpaceOccupied));
+                        Beethoven_currSpacePos_Text.setString(Beethoven.getName() + "\t\tCurrent Occupied Space: " + to_string(Beethoven.currentSpaceOccupied));
+                        Holst_currSpacePos_Text.setString(Holst.getName() + "\t\tCurrent Occupied Space: " + to_string(Holst.currentSpaceOccupied));
+
+                    //}
+
+                    //Done - Need to change from gameView to secretView when the "POWER" button is pressed
+                    //Done [as an additional image] - Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
+                    //Working on it [current spaces are updated and told to the user, still need to implement a way for the user to update the placement of the actual players still...] - Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
                     //Need to reimplement both dice and text that tells user what they rolled (but doesn't actually move the player while on the secretView)
-                    //Need to implement a return button that changes the view back from secretView to gameView
+                    //Need to add a way so that the order that player's take their turn can be adjusted as deemed fit by the user
+                    //Done - Need to implement a return button that changes the view back from secretView to gameView
                 }
             }
 
-            //Screen Movement Input with Arrow Keys and Mouse Scroll from User (if user input [via arrows and scrolling] does not exceeed the values set to "lock" the screen, then the Camera will move to cover a different portion of the screen based on the user's inputs)
-            if (event.type == Event::KeyPressed) { //FOLLOWING WILL BE IMPLEMENTED WHEN SCROLLING WORKS: || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
+            //If "Power!!" Button Pressed again, regular game is resumed
+            if (event.type == sf::Event::MouseButtonPressed && secretMenuView == true && worldPos.y < 410 && (worldPos.x > 1195 && worldPos.x < 2064)) {
+                secretMenuView = false;
+
+                //Perfect Reset of View when the button is pressed to leave the "Secret Menu" and return to the main game
+                gameView.zoom(0.3);
+                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                window.setView(View(gameView));
+            }
+
+            //Screen Movement Input with Arrow Keys and Mouse Scroll from User (if user input [via arrows and scrolling] does not exceed the values set to "lock" the screen, then the Camera will move to cover a different portion of the screen based on the user's inputs)
+            if (event.type == Event::KeyPressed && secretMenuView == false) { //FOLLOWING WILL BE IMPLEMENTED WHEN SCROLLING WORKS: || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
                 
                 //"Up Arrow" or "Page Up" Pressed
                 if (gameView.getCenter().y - gameView_CameraHeight / 2 > -130/*50*/ && (event.key.code == Keyboard::Up || event.key.code == Keyboard::PageUp)) {
@@ -532,9 +616,39 @@ int main()
 
         window.draw(backgroundSprite);
 
+        //Opens [Draws] the "Secret Menu" which is activated by pressing the "POWER!!" Button
         if (secretMenuView == true) {
-            //window.draw(backgroundSprite);
             window.draw(secretMenuSprite); //Temporary, will also pull up a menu that will allow the player positions to be changed
+            
+            GriecoPowerReturn_Sprite.setPosition(1195, 0);
+            window.draw(GriecoPowerReturn_Sprite);
+
+            //Vivaldi.positionX = ?
+            //Vivaldi.positionY = 500
+            //window.draw(Vivaldi.getSprite(Vivaldi.positionX, Vivaldi.positionY));
+            Vivaldi_currSpacePos_Text.setPosition(1750, 500);
+            window.draw(Vivaldi_currSpacePos_Text);
+            
+            Mendelssohn_currSpacePos_Text.setPosition(1750, 650);
+            window.draw(Mendelssohn_currSpacePos_Text);
+
+            Mozart_currSpacePos_Text.setPosition(1750, 800);
+            window.draw(Mozart_currSpacePos_Text);
+
+            Joplin_currSpacePos_Text.setPosition(1750, 950);
+            window.draw(Joplin_currSpacePos_Text);
+
+            Bach_currSpacePos_Text.setPosition(1750, 1100);
+            window.draw(Bach_currSpacePos_Text);
+
+            Verdi_currSpacePos_Text.setPosition(1750, 1250);
+            window.draw(Verdi_currSpacePos_Text);
+
+            Beethoven_currSpacePos_Text.setPosition(1750, 1400);
+            window.draw(Beethoven_currSpacePos_Text);
+
+            Holst_currSpacePos_Text.setPosition(1750, 1550);
+            window.draw(Holst_currSpacePos_Text);
         }
 
         //window.draw(myCircle); //Temporary
@@ -559,7 +673,7 @@ int main()
         window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
 
         //The Black Box Background along with the Dice and POWER buttons only appear if the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
-        if (mouse.getPosition().y < 680) {
+        if (mouse.getPosition().y < 680 && secretMenuView == false) {
             window.draw(buttonBlock);
             window.draw(diceRoll_Text);
 
