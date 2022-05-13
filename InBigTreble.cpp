@@ -537,7 +537,7 @@ int main()
                 secretMenuView = false;
 
                 //Perfect Reset of View when the button is pressed to leave the "Secret Menu" and return to the main game
-                gameView.zoom(0.3);
+                gameView.zoom(1/3.375);
                 gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
                 window.setView(View(gameView));
             }
