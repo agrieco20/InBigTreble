@@ -464,7 +464,7 @@ int main()
             } */
 
             //When either one of the dice is clicked, the result of that random roll is displayed on the screen and is automatically used to move the player's piece around the board
-            //In addition, if the "POWER" button is clicked, then it opens up a secret menu that allows the user to change player positions at their discretion
+            //In addition, if the "POWER" button is clicked, a secret menu is opened that allows the user to change player positions at their discretion
             if (event.type == Event::MouseButtonPressed && secretMenuView == false && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */  || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
                 
                 //If one of the two dice buttons are chosen...
@@ -526,21 +526,45 @@ int main()
                     //Done - Need to change from gameView to secretView when the "POWER" button is pressed
                     //Done [as an additional image] - Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
                     //Working on it [current spaces are updated and told to the user, still need to implement a way for the user to update the placement of the actual players still...] - Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
-                    //Need to reimplement both dice and text that tells user what they rolled (but doesn't actually move the player while on the secretView)
+                        //Need to implement a "Skip Turn" Button
+                    //Done - Need to reimplement both dice and text that tells user what they rolled (but doesn't actually move the player while on the secretView)
                     //Need to add a way so that the order that player's take their turn can be adjusted as deemed fit by the user
                     //Done - Need to implement a return button that changes the view back from secretView to gameView
+                    //Need to add a way [through the arraylist function that will replace "Verdi.[blank]" everywhere in the program] so that teams can choose their game pieces and the order in which they will take turns rolling the dice to move around the board
                 }
             }
 
             //If "Power!!" Button Pressed again, regular game is resumed
             if (event.type == sf::Event::MouseButtonPressed && secretMenuView == true && worldPos.y < 410 && (worldPos.x > 1195 && worldPos.x < 2064)) {
                 secretMenuView = false;
+                diceRoll_Text.setString("Dice Roll: ");
 
                 //Perfect Reset of View when the button is pressed to leave the "Secret Menu" and return to the main game
                 gameView.zoom(1/3.375);
                 gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
                 window.setView(View(gameView));
             }
+
+            //While the Secret Menu is open and one of the dice blocks are pressed, a value is returned but doesn't affect any players' actual position on the game board (just acts like a random number generator)
+            if (event.type == Event::MouseButtonPressed && secretMenuView == true && gameover != true) {
+                
+                //If 6 Sided Dice is Selected, generate random number between 1-6
+                if (worldPos.x > 2095 && worldPos.x <= 2275 && worldPos.y > 5 && worldPos.y < 160) {
+                    diceRoll = randDistro6(rand);
+                    //cout << "6 Sided Dice Clicked" << endl; //Temporary
+                }
+                //IMPLEMENT Y VALUES
+                //If 20 Sided Dice is Selected, generate random number between 1-20
+                if (worldPos.x > 2305 && worldPos.x < 2465 && worldPos.y > 0 && worldPos.y < 170) {
+                    diceRoll = randDistro20(rand);
+                    //cout << "20 Sided Dice Clicked" << endl; //Temporary
+                }
+                
+                diceRoll_Text.setString("Dice Roll: " + to_string(diceRoll));
+
+                //ccccc
+            }
+
 
             //Screen Movement Input with Arrow Keys and Mouse Scroll from User (if user input [via arrows and scrolling] does not exceed the values set to "lock" the screen, then the Camera will move to cover a different portion of the screen based on the user's inputs)
             if (event.type == Event::KeyPressed && secretMenuView == false) { //FOLLOWING WILL BE IMPLEMENTED WHEN SCROLLING WORKS: || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
@@ -578,15 +602,6 @@ int main()
 
             }
             
-            //-------------------------------------------------
-            //The dice [both the 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons/buttons can now "follow" the gameView camera to wherever it is moved to -> Dice and Power can be accessed using a combination and translation between the Mouse's Position (pixelPos) and the World's Position (worldPos) [see below]
-            buttonBlock.setPosition(0, gameView.getCenter().y - gameView_CameraHeight / 2);
-            diceRoll_Text.setPosition(400, (gameView.getCenter().y - gameView_CameraHeight / 2) + 55);
-
-            dice6_Sprite.setPosition(10, (gameView.getCenter().y - gameView_CameraHeight / 2) + 5);
-            dice20_Sprite.setPosition(200, (gameView.getCenter().y - gameView_CameraHeight / 2));
-            GriecoPower_Sprite.setPosition(805, (gameView.getCenter().y - gameView_CameraHeight / 2) + 0);
-            
             //Tests if scoll is working
             //cout << gameView.getSize().y << endl;
             /*if (event.type == Event::MouseWheelScrolled) {
@@ -598,7 +613,6 @@ int main()
                         cout << "User Scrolled Down - " << event.mouseWheelScroll.delta << endl;
                     }
                 }
-               
             }*/
 
             //myCircle.setPosition(mouse.getPosition(window).x -200, mouse.getPosition().y -350);
@@ -672,14 +686,34 @@ int main()
         window.draw(Beethoven.getSprite(Beethoven.positionX, Beethoven.positionY));
         window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
 
-        //The Black Box Background along with the Dice and POWER buttons only appear if the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
+        //The Black Box Background along with the Dice and POWER buttons only appear if the Secret Menu is closed and the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
         if (mouse.getPosition().y < 680 && secretMenuView == false) {
+            
+            //The dice [both the 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons/buttons can now "follow" the gameView camera to wherever it is moved to -> Dice and Power can be accessed using a combination and translation between the Mouse's Position (pixelPos) and the World's Position (worldPos) [see below]
+            buttonBlock.setPosition(0, gameView.getCenter().y - gameView_CameraHeight / 2);
+            diceRoll_Text.setPosition(400, (gameView.getCenter().y - gameView_CameraHeight / 2) + 55);
+
+            dice6_Sprite.setPosition(10, (gameView.getCenter().y - gameView_CameraHeight / 2) + 5);
+            dice20_Sprite.setPosition(200, (gameView.getCenter().y - gameView_CameraHeight / 2));
+            GriecoPower_Sprite.setPosition(805, (gameView.getCenter().y - gameView_CameraHeight / 2) + 0);
+            
             window.draw(buttonBlock);
             window.draw(diceRoll_Text);
 
             window.draw(dice6_Sprite);
             window.draw(dice20_Sprite);
             window.draw(GriecoPower_Sprite);
+        }
+
+        //Reassigns the locations of the dice if the Secret Menu is Open
+        if (secretMenuView == true) { //ccccc
+            diceRoll_Text.setPosition(2095, 200);
+            dice6_Sprite.setPosition(2095, 5);
+            dice20_Sprite.setPosition(2295, 0);
+            
+            window.draw(diceRoll_Text);
+            window.draw(dice6_Sprite);
+            window.draw(dice20_Sprite);
         }
 
         //Tests to find the approximate center of each of the spaces
