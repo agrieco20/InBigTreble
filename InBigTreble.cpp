@@ -12,6 +12,7 @@
 #include "Space.h" //Designed to store the location of each of the spaces players can land on while playing the game
 #include "Player.h" //Designed to store the location of each player as they progress through the game. Player objects tend to communicate directly with the Space objects in order the determine where they need to travel to on the board.
 #include <list> //ArrayList Library
+#include <array>
 
 #include <ctime>
 #include <random>
@@ -126,16 +127,50 @@ int main()
     Holst.setSprite();
     
     //Verdi.getSprite().setPosition(Verdi.positionX, Verdi.positionY);
+
+     /*
+    //-----------
+    //Testing array and arraylist declarations
+
+    //Old Array... DO NOT USE THIS DECLARATION -> Player * totalPossiblePlayers[8] = {&Vivaldi, &Mendelssohn, &Mozart, &Joplin, &Bach, &Verdi, &Beethoven, &Holst};
+    array <Player *, 8> totalPossiblePlayers = {&Vivaldi, &Mendelssohn, &Mozart, &Joplin, &Bach, &Verdi, &Beethoven, &Holst};
+
+    //Tests to see if the test array is working [it does]
+    for (int i = 0; i < totalPossiblePlayers.size(); i++) {
+        cout << totalPossiblePlayers[i]->getName() << endl;
+    }
+    */
+
+    //Successful ArrayList Declaration [ITERATOR WORKS NOW -> See test below]
+    list<Player*> listOfPlayers;
     
-    //Successful ArrayList Declaration
-    //list<Player> listOfPlayers;
-    //listOfPlayers.push_back(player1);
-    //cout << listOfPlayers.size() << endl;
+    
+    //listOfPlayers.push_back(&Vivaldi);
+    //listOfPlayers.push_back(&Mendelssohn);
+    //listOfPlayers.push_back(&Mozart);
+    //listOfPlayers.push_back(&Joplin);
+    //listOfPlayers.push_back(&Bach);
+    //listOfPlayers.push_back(&Verdi);
+    //listOfPlayers.push_back(&Beethoven);
+    //listOfPlayers.push_back(&Holst);
+    
+    list <Player *> :: iterator it;
+    //it = listOfPlayers.begin();
 
-    //array<int, 1> arrayOfSpaces{ space1 };
+    //------------- //Tests [WORKS] to see if the arrayList "listOfPlayers" is working by iterating through each of the elements currently being held within it and printing out the names and according "X Positions" where each of the elements are located on the board to the console
+    for (it = listOfPlayers.begin(); it != listOfPlayers.end(); it++) {
+        cout << (*it)->getName() << " " << (*it)->positionX << endl;
+    }
+    //In the final version of the game the iterator will be incremented and reset [see possible code for this task below] without the use of a specific "for loop" because this would cause all the elements to be cycled through every time the program "redraws" the screen (which occurs 60 times every second) and would then be completely useless [iterator will only incremented when specific conditions are met -> search for "Verdi.[blank]" statements throughout the code for those appropriate conditions]
 
-    //int * numarray = new int[10];
-
+    /*if (it != listOfPlayers.end()){
+        it++;
+    }
+    else{
+        it = listOfPlayers.begin();
+    } */
+    //-------------
+    
     //-------------------------------------------------------
     //Circle Test
 
@@ -210,7 +245,7 @@ int main()
     //----
 
     //-------------------------------------------------------
-    //Initializes the Background Image, Used as the Gameboard
+    //Initializes the Background Image, Used as the Gameboard shown in the main game
     Texture backgroundTexture;
     backgroundTexture.loadFromFile("ImageFiles/InBigTrebleGAMEBOARD_2.png");
 
@@ -218,9 +253,29 @@ int main()
     backgroundSprite.setTexture(backgroundTexture);
 
     backgroundSprite.setPosition(0, 0);
+    
+    //-------------------------------------------------------
+    //Initializes the Game Setup Menu that opens before the main game starts and allows the user to select the number of participating teams and which icons/game pieces they will each use
+    Texture playerSelectMenuTexture;
+    playerSelectMenuTexture.loadFromFile("ImageFiles/TeamNumberSelect.png");
+
+    Sprite playerSelectMenuSprite;
+    playerSelectMenuSprite.setTexture(playerSelectMenuTexture);
+    
+    playerSelectMenuSprite.setPosition(0,1350);
 
     //-------------------------------------------------------
-    //Initializes the Background Image, Used as the Gameboard
+    //Initializes the button used in the Game Setup Menu to indicate how many players/teams will be participating in the game
+    Texture playerSelectMenu_Buttton_Texture;
+    playerSelectMenu_Buttton_Texture.loadFromFile("ImageFiles/TeamNumberSelect_Button.png");
+
+    Sprite playerSelectMenu_Button_Sprite;
+    playerSelectMenu_Button_Sprite.setTexture(playerSelectMenu_Buttton_Texture);
+
+    playerSelectMenu_Button_Sprite.setPosition(740, 1400);
+
+    //-------------------------------------------------------
+    //Initializes the Background Image, Used as the Gameboard shown in the Secret Menu
     Texture secretMenuTexture;
     secretMenuTexture.loadFromFile("ImageFiles/InBigTrebleGAMEBOARD_2_secretView.png");
 
@@ -295,7 +350,7 @@ int main()
     diceRoll_Text.setFillColor(Color(255, 255, 255)); //White Text
     diceRoll_Text.setString("Dice Roll: "); //Reset for when no dice have been thrown yet
 
-    string bob = "dude";
+    //string bob = "dude";
     //-------------------------------------------------------
     //TEMPORARY: Try to reduce the following section into a method stored in the Player Class Declaration
     //Initializes the text used to indicate what space each of the players are currently on [only active whenever the "Secret Menu" has been opened]
@@ -439,7 +494,14 @@ int main()
                 secretMenuSprite.setScale(targetSize.x / (secretMenuSprite.getLocalBounds().width), targetSize.y / (secretMenuSprite.getLocalBounds().height/2));
 
                 gameView.reset(FloatRect(0.f, 0.f, gameView_CameraWidth, gameView_CameraHeight));
-                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                
+                if (Verdi.positionY < 1650){//TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                    gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                }
+                else {
+                    gameView.setCenter(gameView_CameraWidth / 2, 1650);
+                }
+
                 window.setView(View(gameView));
                 // */
                 //---------
@@ -520,9 +582,12 @@ int main()
                         Verdi_currSpacePos_Text.setString(Verdi.getName() + "\t\tCurrent Occupied Space: " + to_string(Verdi.currentSpaceOccupied));
                         Beethoven_currSpacePos_Text.setString(Beethoven.getName() + "\t\tCurrent Occupied Space: " + to_string(Beethoven.currentSpaceOccupied));
                         Holst_currSpacePos_Text.setString(Holst.getName() + "\t\tCurrent Occupied Space: " + to_string(Holst.currentSpaceOccupied));
-
+                        
                     //}
 
+                    //Need to implement an introductory game menu [offers way to start the game, open up the rules{PDF file stored in images}<with a back button>, and open the credits<with a back button>]
+                    //Working on it - Need to implement a menu that allows the number of players to be chosen by the user and which pieces they going to use while playing the game [appears in-between the introductory menu and the actual game menu]
+                        //The actual image for the menu has been implemented, need to be able to take in user input through [worldPos.x and worldPos.y] to select how many players/teams will be participating [that button is then "pressed" by covering it with the "playerSelectMenu_Button_Sprite" and the value for the # of teams that will participate is saved in a int variable that decrements every time a team's icon is selected {that player icon is added to the arraylist "listOfPlayers"} which will eventually make the boolean "playerSelectioComplete" true and stop the "playerSelectMenuSprite" menu from being shown] and then take user input again through [worldPos.x and worldPos.y] to select which icon/game piece will be used to represent that team as they move around the game board [which is added to the arraylist -> see previous {...} comment for further details on how it works]
                     //Done - Need to change from gameView to secretView when the "POWER" button is pressed
                     //Done [as an additional image] - Need to implement numbering for each space (through text) with the attribute assigned to each space that refers to their position on the map (Broad Example [could be implemented through a for loop]: "arrayOfSpaces[i].getSpaceNum();" | Specific Example: "space1.getSpaceNum();")
                     //Working on it [current spaces are updated and told to the user, still need to implement a way for the user to update the placement of the actual players still...] - Need to implement the menu that allows player positions to be changed and current order of the players (including who the next player/team is in line) to be changed
@@ -541,7 +606,14 @@ int main()
 
                 //Perfect Reset of View when the button is pressed to leave the "Secret Menu" and return to the main game
                 gameView.zoom(1/3.375);
-                gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                
+                if (Verdi.positionY < 1650) {//TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                    gameView.setCenter(gameView_CameraWidth / 2, Verdi.positionY); //TEMPORARY - "Verdi" will be changed to the name of the arrayList storing all the player objects with the current player whose turn it is being the one the view refocuses on whenever the window size is altered/changed
+                }
+                else {
+                    gameView.setCenter(gameView_CameraWidth / 2, 1650);
+                }
+
                 window.setView(View(gameView));
             }
 
@@ -561,8 +633,6 @@ int main()
                 }
                 
                 diceRoll_Text.setString("Dice Roll: " + to_string(diceRoll));
-
-                //ccccc
             }
 
 
@@ -686,8 +756,13 @@ int main()
         window.draw(Beethoven.getSprite(Beethoven.positionX, Beethoven.positionY));
         window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
 
+        //if (playerSelectionComplete == false) { //Used to determine when to actually start the game [playerSelectionComplete is initiated after the user selects how many players/teams are playing and will become true after the same number of icons/game pieces have been selected, starting the actual game]
+            window.draw(playerSelectMenuSprite);
+            window.draw(playerSelectMenu_Button_Sprite);
+        //}
+
         //The Black Box Background along with the Dice and POWER buttons only appear if the Secret Menu is closed and the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
-        if (mouse.getPosition().y < 680 && secretMenuView == false) {
+        if (mouse.getPosition().y < 680 && secretMenuView == false /* &&playerSelectionComplete == true */) { //TEMPORARY -> condition currently commented out needs to be implemented after "Start Button" on the Intro Menu is pressed [before the actual game begins]
             
             //The dice [both the 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons/buttons can now "follow" the gameView camera to wherever it is moved to -> Dice and Power can be accessed using a combination and translation between the Mouse's Position (pixelPos) and the World's Position (worldPos) [see below]
             buttonBlock.setPosition(0, gameView.getCenter().y - gameView_CameraHeight / 2);
@@ -706,7 +781,7 @@ int main()
         }
 
         //Reassigns the locations of the dice if the Secret Menu is Open
-        if (secretMenuView == true) { //ccccc
+        if (secretMenuView == true) {
             diceRoll_Text.setPosition(2095, 200);
             dice6_Sprite.setPosition(2095, 5);
             dice20_Sprite.setPosition(2295, 0);
