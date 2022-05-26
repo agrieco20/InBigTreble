@@ -6,6 +6,6 @@
 It is responsible for the following functions and operations:
 - Simulate the movement of the 8 possible players/teams as they travel around the game board
 
-- Graphics Production including those of the player pieces, game board, and dice
+- Graphics Production including those of the player pieces, game board, buttons, dice, etc.
 
 - Allowing a space for players to logically advance through the game in a turn-based fashion
