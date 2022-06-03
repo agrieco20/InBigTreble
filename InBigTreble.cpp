@@ -144,7 +144,6 @@ int main()
     //Successful ArrayList Declaration [ITERATOR WORKS NOW -> See test below]
     list<Player*> listOfPlayers;
     
-    
     //listOfPlayers.push_back(&Vivaldi);
     //listOfPlayers.push_back(&Mendelssohn);
     //listOfPlayers.push_back(&Mozart);
@@ -155,12 +154,13 @@ int main()
     //listOfPlayers.push_back(&Holst);
     
     list <Player *> :: iterator it;
-    //it = listOfPlayers.begin();
+    it = listOfPlayers.begin();
 
     //------------- //Tests [WORKS] to see if the arrayList "listOfPlayers" is working by iterating through each of the elements currently being held within it and printing out the names and according "X Positions" where each of the elements are located on the board to the console
-    for (it = listOfPlayers.begin(); it != listOfPlayers.end(); it++) {
+    /*for (it = listOfPlayers.begin(); it != listOfPlayers.end(); it++) {
         cout << (*it)->getName() << " " << (*it)->positionX << endl;
-    }
+    }*/
+
     //In the final version of the game the iterator will be incremented and reset [see possible code for this task below] without the use of a specific "for loop" because this would cause all the elements to be cycled through every time the program "redraws" the screen (which occurs 60 times every second) and would then be completely useless [iterator will only incremented when specific conditions are met -> search for "Verdi.[blank]" statements throughout the code for those appropriate conditions]
 
     /*if (it != listOfPlayers.end()){
@@ -272,7 +272,7 @@ int main()
     Sprite playerSelectMenu_Button_Sprite;
     playerSelectMenu_Button_Sprite.setTexture(playerSelectMenu_Buttton_Texture);
 
-    playerSelectMenu_Button_Sprite.setPosition(740, 1400);
+    playerSelectMenu_Button_Sprite.setPosition(333, -1464);
 
     //-------------------------------------------------------
     //Initializes the Background Image, Used as the Gameboard shown in the Secret Menu
@@ -342,7 +342,15 @@ int main()
     calibriFont.loadFromFile("FontFiles/Calibri Regular.ttf");
     
     //-------------------------------------------------------
-    //Initializes the text used to indicate to the use what the dice roll was (removes necessity of reading it from the console script)
+    //Initializes the text that prompts each team to select an icon/game piece to represent as they travel around the gameboard
+    Text playerIconSelectPrompt;
+    playerIconSelectPrompt.setFont(calibriFont);
+    playerIconSelectPrompt.setCharacterSize(48);
+    playerIconSelectPrompt.setStyle(Text::Bold);
+    playerIconSelectPrompt.setFillColor(Color(255, 255, 255)); //White Text
+    
+    //-------------------------------------------------------
+    //Initializes the text used to indicate to the user what the dice roll was (removes necessity of reading it from the console script)
     Text diceRoll_Text;
     diceRoll_Text.setFont(calibriFont);
     diceRoll_Text.setCharacterSize(48);
@@ -358,49 +366,49 @@ int main()
     Vivaldi_currSpacePos_Text.setFont(calibriFont);
     Vivaldi_currSpacePos_Text.setCharacterSize(100);
     Vivaldi_currSpacePos_Text.setStyle(Text::Bold);
-    Vivaldi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Vivaldi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Mendelssohn_currSpacePos_Text;
     Mendelssohn_currSpacePos_Text.setFont(calibriFont);
     Mendelssohn_currSpacePos_Text.setCharacterSize(100);
     Mendelssohn_currSpacePos_Text.setStyle(Text::Bold);
-    Mendelssohn_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Mendelssohn_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Mozart_currSpacePos_Text;
     Mozart_currSpacePos_Text.setFont(calibriFont);
     Mozart_currSpacePos_Text.setCharacterSize(100);
     Mozart_currSpacePos_Text.setStyle(Text::Bold);
-    Mozart_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Mozart_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Joplin_currSpacePos_Text;
     Joplin_currSpacePos_Text.setFont(calibriFont);
     Joplin_currSpacePos_Text.setCharacterSize(100);
     Joplin_currSpacePos_Text.setStyle(Text::Bold);
-    Joplin_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Joplin_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Bach_currSpacePos_Text;
     Bach_currSpacePos_Text.setFont(calibriFont);
     Bach_currSpacePos_Text.setCharacterSize(100);
     Bach_currSpacePos_Text.setStyle(Text::Bold);
-    Bach_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Bach_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Verdi_currSpacePos_Text;
     Verdi_currSpacePos_Text.setFont(calibriFont);
     Verdi_currSpacePos_Text.setCharacterSize(100);
     Verdi_currSpacePos_Text.setStyle(Text::Bold);
-    Verdi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Verdi_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Beethoven_currSpacePos_Text;
     Beethoven_currSpacePos_Text.setFont(calibriFont);
     Beethoven_currSpacePos_Text.setCharacterSize(100);
     Beethoven_currSpacePos_Text.setStyle(Text::Bold);
-    Beethoven_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Beethoven_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
 
     Text Holst_currSpacePos_Text;
     Holst_currSpacePos_Text.setFont(calibriFont);
     Holst_currSpacePos_Text.setCharacterSize(100);
     Holst_currSpacePos_Text.setStyle(Text::Bold);
-    Holst_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White Text
+    Holst_currSpacePos_Text.setFillColor(Color(255, 255, 255)); //White
     
     //-------------------------------------------------------
     //Mouse Initialization
@@ -466,7 +474,25 @@ int main()
 
     int rollDifferential = 0; //Records the difference between the space the player is currently on and the space they need to travel to after the dice has been rolled
     bool gameover = false; //When switched to "true" the game is over
+    
     bool secretMenuView = false; //When true, the "Secret Menu" is activated so that the user has the POWER to move players/teams around as the desire (ex: if a team plays a treasure card or if the game were to crash the user can place players/teams back where the previously were)
+    
+    bool playerSelectionComplete = false; //When "true" the menu that allows the user to choose how many teams/players will be competing in the game [along with choosing which icons will represent them on the gameboard] will stop being drawn
+    int numberOfPlayersTotal = 9; //This variable is set to decrement every time a player/team chooses an icon to represent them on the gameboard, when it hits zero the "playerSelectionComplete" boolean will be set to true and the actual game will begin [initially set to 9 instead of 0 to prevent an error where the actual game can never start because the "playerSelectionComplete" boolean would be immediately set to true despite there being no selected teams -> The "9" will be overwritten with the actual number of participating teams/players depending on which button the user selects while the according menu is being displayed]
+    bool numberOfPlayersSelected = false; //Set to true once the user has selected how many players/teams will be competing, which then allows each team to select which icon/game piece will represent them as they travel around the board
+    bool anyPlayerSelected = false; //If any player/team icon has already been selected, the user can no longer change the number of participating players/teams
+    int teamNumIncrementor = 1; //Increments the value by one in the text "Team _ Selects:" when teams are picking which icon/game piece will represent them as they travel around the gameboard
+
+    bool vivaldi_Selected = false; //Indicates that "Vivaldi" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool mendelssohn_Selected = false; //Indicates that "Mendelssohn" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool mozart_Selected = false; //Indicates that "Mozart" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool joplin_Selected = false; //Indicates that "Joplin" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool bach_Selected = false; //Indicates that "Bach" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool verdi_Selected = false; //Indicates that "Verdi" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool beethoven_Selected = false; //Indicates that "Beethoven" has already been selected as an icon/game piece and cannot be picked again by another player/team
+    bool holst_Selected = false; //Indicates that "Holst" has already been selected as an icon/game piece and cannot be picked again by another player/team
+
+    //ddddddd
 
     while (window.isOpen())
     {
@@ -527,7 +553,7 @@ int main()
 
             //When either one of the dice is clicked, the result of that random roll is displayed on the screen and is automatically used to move the player's piece around the board
             //In addition, if the "POWER" button is clicked, a secret menu is opened that allows the user to change player positions at their discretion
-            if (event.type == Event::MouseButtonPressed && secretMenuView == false && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */  || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
+            if (event.type == Event::MouseButtonPressed && secretMenuView == false && (mouse.getPosition().y < 680) && ((worldPos.x > 20 && worldPos.x <= 190)/* 1-6 Dice */ || (worldPos.x > 213 && worldPos.x < 361) /* 1-20 Dice */ || (worldPos.x > 805 && worldPos.x < 1195)) /* POWER!! */ && gameover != true) {
                 
                 //If one of the two dice buttons are chosen...
                 if ((worldPos.x > 20 && worldPos.x <= 190) || (worldPos.x > 213 && worldPos.x < 361)) {
@@ -554,6 +580,14 @@ int main()
                         Verdi.positionY = arrayOfSpaces[rollDifferential - 1].getCenterY();
                         Verdi.currentSpaceOccupied = arrayOfSpaces[rollDifferential - 1].getSpaceNum();
                         //arrayOfSpaces[rollDifferential - 1].isOccupied = true;
+                        
+                        //If iterator "it" has reached the end of the alloted spaces in the arraylist structure "listOfPlayers", it will be reset to the beginning of the list
+                        if (it != listOfPlayers.end()) {
+                            it++;
+                        }
+                        else {
+                            it = listOfPlayers.begin();
+                        }
                     }
 
                     if (Verdi.currentSpaceOccupied == 100) {
@@ -595,7 +629,8 @@ int main()
                     //Done - Need to reimplement both dice and text that tells user what they rolled (but doesn't actually move the player while on the secretView)
                     //Need to add a way so that the order that player's take their turn can be adjusted as deemed fit by the user
                     //Done - Need to implement a return button that changes the view back from secretView to gameView
-                    //Need to add a way [through the arraylist function that will replace "Verdi.[blank]" everywhere in the program] so that teams can choose their game pieces and the order in which they will take turns rolling the dice to move around the board
+                    //Working on it - Need to add a way [through the arraylist function that will replace "Verdi.[blank]" everywhere in the program] so that teams can choose their game pieces and the order in which they will take turns rolling the dice to move around the board
+                        //Just need to replace "Verdi.[blank]" with "(*it)->" now...
                 }
             }
 
@@ -618,14 +653,14 @@ int main()
             }
 
             //While the Secret Menu is open and one of the dice blocks are pressed, a value is returned but doesn't affect any players' actual position on the game board (just acts like a random number generator)
-            if (event.type == Event::MouseButtonPressed && secretMenuView == true && gameover != true) {
+            if (event.type == Event::MouseButtonPressed && secretMenuView == true && gameover == false) {
                 
                 //If 6 Sided Dice is Selected, generate random number between 1-6
                 if (worldPos.x > 2095 && worldPos.x <= 2275 && worldPos.y > 5 && worldPos.y < 160) {
                     diceRoll = randDistro6(rand);
                     //cout << "6 Sided Dice Clicked" << endl; //Temporary
                 }
-                //IMPLEMENT Y VALUES
+
                 //If 20 Sided Dice is Selected, generate random number between 1-20
                 if (worldPos.x > 2305 && worldPos.x < 2465 && worldPos.y > 0 && worldPos.y < 170) {
                     diceRoll = randDistro20(rand);
@@ -635,7 +670,165 @@ int main()
                 diceRoll_Text.setString("Dice Roll: " + to_string(diceRoll));
             }
 
+            //Logic for Menu that determines how many players/teams will be participating and which icons/game pieces they will have to represent them as they travel around the gameboard
+            if (event.type == Event::MouseButtonPressed && playerSelectionComplete == false) {
+                
+                //User selects how many players/teams will be competing
+                if (anyPlayerSelected == false && worldPos.y >= 1463 && worldPos.y <= 1508) {
+                    
+                    //Button: 1 Team Participating
+                    if (worldPos.x > 333 && worldPos.x < 414) {
+                        numberOfPlayersTotal = 1;
+                        playerSelectMenu_Button_Sprite.setPosition(333, 1464);
+                    }
 
+                    //Button: 2 Teams Participating
+                    if (worldPos.x > 414 && worldPos.x < 495) {
+                        numberOfPlayersTotal = 2;
+                        playerSelectMenu_Button_Sprite.setPosition(414, 1464);
+                    }
+
+                    //Button: 3 Teams Participating
+                    if (worldPos.x > 495 && worldPos.x < 576) {
+                        numberOfPlayersTotal = 3;
+                        playerSelectMenu_Button_Sprite.setPosition(495, 1464);
+                    }
+
+                    //Button: 4 Teams Participating
+                    if (worldPos.x > 576 && worldPos.x < 657) {
+                        numberOfPlayersTotal = 4;
+                        playerSelectMenu_Button_Sprite.setPosition(576, 1464);
+                    }
+
+                    //Button: 5 Teams Participating
+                    if (worldPos.x > 657 && worldPos.x < 738) {
+                        numberOfPlayersTotal = 5;
+                        playerSelectMenu_Button_Sprite.setPosition(657, 1464);
+                    }
+                    
+                    //Button: 6 Teams Participating
+                    if (worldPos.x > 738 && worldPos.x < 819) {
+                        numberOfPlayersTotal = 6;
+                        playerSelectMenu_Button_Sprite.setPosition(738, 1464);
+                    }
+
+                    //Button: 7 Teams Participating
+                    if (worldPos.x > 819 && worldPos.x < 900) {
+                        numberOfPlayersTotal = 7;
+                        playerSelectMenu_Button_Sprite.setPosition(819, 1464);
+                    }
+
+                    //Button: 8 Teams Participating
+                    if (worldPos.x > 900 && worldPos.x < 981) {
+                        numberOfPlayersTotal = 8;
+                        playerSelectMenu_Button_Sprite.setPosition(900, 1464);
+                    }
+                    numberOfPlayersSelected = true;
+                    teamNumIncrementor = 1;
+                }
+
+                //User selects which icons/game pieces will represent the different players/teams 
+                if (numberOfPlayersSelected == true){
+                    if (worldPos.y > 1704 && worldPos.y < 1806) {
+
+                        //Selected Icon/Game Piece: Vivaldi
+                        if (vivaldi_Selected == false && worldPos.x > 160 && worldPos.x < 375) {
+                            listOfPlayers.push_back(&Vivaldi);
+                            vivaldi_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Vivaldi Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Mendelssohn
+                        if (mendelssohn_Selected == false && worldPos.x > 381 && worldPos.x < 595) {
+                            listOfPlayers.push_back(&Mendelssohn);
+                            mendelssohn_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Mendelssohn Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Mozart
+                        if (mozart_Selected == false && worldPos.x > 601 && worldPos.x < 816) {
+                            listOfPlayers.push_back(&Mozart);
+                            mozart_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Mozart Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Joplin
+                        if (joplin_Selected == false && worldPos.x > 822 && worldPos.x < 1036) {
+                            listOfPlayers.push_back(&Joplin);
+                            joplin_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Joplin Selected" << endl; //TEMPORARY
+                        }
+                        anyPlayerSelected = true;
+                    }
+                    
+                    if (worldPos.y > 1815 && worldPos.y < 1917) {
+                        
+                        //Selected Icon/Game Piece: Bach
+                        if (bach_Selected == false && worldPos.x > 160 && worldPos.x < 375) {
+                            listOfPlayers.push_back(&Bach);
+                            bach_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Bach Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Verdi
+                        if (verdi_Selected == false && worldPos.x > 381 && worldPos.x < 595) {
+                            listOfPlayers.push_back(&Verdi);
+                            verdi_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Verdi Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Beethoven
+                        if (beethoven_Selected == false && worldPos.x > 601 && worldPos.x < 816) {
+                            listOfPlayers.push_back(&Beethoven);
+                            beethoven_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Beethoven Selected" << endl; //TEMPORARY
+                        }
+
+                        //Selected Icon/Game Piece: Holst
+                        if (holst_Selected == false && worldPos.x > 822 && worldPos.x < 1036) {
+                            listOfPlayers.push_back(&Holst);
+                            holst_Selected = true;
+                            numberOfPlayersTotal--;
+                            teamNumIncrementor++;
+
+                            cout << "Holst Selected" << endl; //TEMPORARY
+                        }
+                        anyPlayerSelected = true;
+                    }
+
+                    playerIconSelectPrompt.setString("Team " + to_string(teamNumIncrementor) + " Selects: ");
+                    playerIconSelectPrompt.setPosition(100, 1600);
+                }
+                
+                if (numberOfPlayersTotal == 0) {
+                    playerSelectionComplete = true;
+                }
+
+            }
+
+            //ddddddd
+            
             //Screen Movement Input with Arrow Keys and Mouse Scroll from User (if user input [via arrows and scrolling] does not exceed the values set to "lock" the screen, then the Camera will move to cover a different portion of the screen based on the user's inputs)
             if (event.type == Event::KeyPressed && secretMenuView == false) { //FOLLOWING WILL BE IMPLEMENTED WHEN SCROLLING WORKS: || (event.type == Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)) {
                 
@@ -672,7 +865,7 @@ int main()
 
             }
             
-            //Tests if scoll is working
+            //Tests if scroll is working
             //cout << gameView.getSize().y << endl;
             /*if (event.type == Event::MouseWheelScrolled) {
                 if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
@@ -756,13 +949,14 @@ int main()
         window.draw(Beethoven.getSprite(Beethoven.positionX, Beethoven.positionY));
         window.draw(Holst.getSprite(Holst.positionX, Holst.positionY));
 
-        //if (playerSelectionComplete == false) { //Used to determine when to actually start the game [playerSelectionComplete is initiated after the user selects how many players/teams are playing and will become true after the same number of icons/game pieces have been selected, starting the actual game]
+        if (playerSelectionComplete == false) { //Used to determine when to actually start the game [playerSelectionComplete is initiated after the user selects how many players/teams are playing and will become true after the same number of icons/game pieces have been selected, starting the actual game]
             window.draw(playerSelectMenuSprite);
             window.draw(playerSelectMenu_Button_Sprite);
-        //}
+            window.draw(playerIconSelectPrompt);
+        }
 
         //The Black Box Background along with the Dice and POWER buttons only appear if the Secret Menu is closed and the user places the mouse "above" Pixel y = 680 ("above" referring to how the user sees the program and not how the coordinate grid actually works in programming with graphics)
-        if (mouse.getPosition().y < 680 && secretMenuView == false /* &&playerSelectionComplete == true */) { //TEMPORARY -> condition currently commented out needs to be implemented after "Start Button" on the Intro Menu is pressed [before the actual game begins]
+        if (mouse.getPosition().y < 680 && secretMenuView == false && playerSelectionComplete == true) {
             
             //The dice [both the 6 and 20 sided ones] and 'Dr. Grieco Has the POWER!!!' icons/buttons can now "follow" the gameView camera to wherever it is moved to -> Dice and Power can be accessed using a combination and translation between the Mouse's Position (pixelPos) and the World's Position (worldPos) [see below]
             buttonBlock.setPosition(0, gameView.getCenter().y - gameView_CameraHeight / 2);
@@ -791,7 +985,7 @@ int main()
             window.draw(dice20_Sprite);
         }
 
-        //Tests to find the approximate center of each of the spaces
+        //Tests to find the approximate center of each of the spaces and other boundaries for things like buttons
         //cout << "Mouse: " << mouse.getPosition(window).x << "," << mouse.getPosition(window).y << endl; //Mouse Position
         //cout << "World: " << worldPos.x << "," << worldPos.y << endl; //World Position
 
